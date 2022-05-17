@@ -608,6 +608,53 @@ new_file_message(void)
     return shortmess(SHM_NEW) ? _("[New]") : _("[New File]");
 }
 
+// You must free the result if result is non-NULL.
+char* str_replace(char* orig, char* rep, char* with) {
+	char* result; // the return string
+	char* ins;    // the next insert point
+	char* tmp;    // varies
+	int len_rep;  // length of rep (the string to remove)
+	int len_with; // length of with (the string to replace rep with)
+	int len_front; // distance between rep and end of last rep
+	int count;    // number of replacements
+
+	// sanity checks and initialization
+	if (!orig || !rep)
+		return NULL;
+	len_rep = strlen(rep);
+	if (len_rep == 0)
+		return NULL; // empty rep causes infinite loop during count
+	if (!with)
+		with = "";
+	len_with = strlen(with);
+
+	// count the number of replacements needed
+	ins = orig;
+	for (count = 0; tmp = strstr(ins, rep); ++count) {
+		ins = tmp + len_rep;
+	}
+
+	tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+
+	if (!result)
+		return NULL;
+
+	// first time through the loop, all the variable are set correctly
+	// from here on,
+	//    tmp points to the end of the result string
+	//    ins points to the next occurrence of rep in orig
+	//    orig points to the remainder of orig after "end of rep"
+	while (count--) {
+		ins = strstr(orig, rep);
+		len_front = ins - orig;
+		tmp = strncpy(tmp, orig, len_front) + len_front;
+		tmp = strcpy(tmp, with) + len_with;
+		orig += len_front + len_rep; // move to next "end of rep"
+	}
+	strcpy(tmp, orig);
+	return result;
+}
+
 /*
  * buf_write() - write to file "fname" lines "start" through "end"
  *
@@ -638,16 +685,30 @@ buf_write(
     int		    reset_changed,
     int		    filtering)
 {
-	// maybe TODO
-		// I can use buf and fopen/fwrite to create the file (with fname) here.
-	//char_u* last_name = 0;
-	FILE* debug_file_tmp = fopen("./debug/test9.txt", "w");
-	if (debug_file_tmp != NULL) {
-		fprintf(debug_file_tmp, "%s", fname);
-		fclose(debug_file_tmp);
+	// TODO
+	/*FILE* distr_file = str_replace(fname, "files", "distributed_files");*/
+	FILE* ver2_file_read = fopen(fname, "r");
+	char_u* ver2_fname = str_replace(fname, "version1", "version2");
+	FILE* ver2_file = fopen(ver2_fname, "w");
 
-		// sync data
+	// transfer ver2_file_read from version 1 to version 2
+	char character;
+	character = fgetc(ver2_file_read);
+	while (character != EOF)
+	{
+		fputc(character, ver2_file);
+		character = fgetc(ver2_file_read);
 	}
+	fclose(ver2_file);
+	fclose(ver2_file_read);
+
+
+	// hopefully the rest of the function does this for me
+	/*FILE* ver1_file_write = fopen(fname, "w");
+	fprintf(ver1_file_write, "%s", buffer);
+	fclose(ver1_file_write);*/
+
+		// sync data at end of function
 	
 
     int		    fd;
@@ -1505,7 +1566,6 @@ buf_write(
 			if (write_info.bw_len < 0)
 			    errmsg = (char_u *)_(e_cant_read_file_for_backup_add_bang_to_write_anyway);
 
-			// maybe TODO
 #ifdef UNIX
 			set_file_time(backup, st_old.st_atime, st_old.st_mtime);
 #endif
@@ -1967,7 +2027,6 @@ restore_backup:
 	}
 	errmsg = NULL;
 
-	// maybe TODO
 
 	write_info.bw_buf = buffer;
 	nchars = 0;
@@ -2031,7 +2090,6 @@ restore_backup:
 	s = buffer;
 	len = 0;
 	
-	//maybe TODO
 
 	for (lnum = start; lnum <= end; ++lnum)
 	{
@@ -2637,6 +2695,9 @@ nofail:
 #endif
 
     got_int |= prev_got_int;
+
+	// TODO
+	//scp files
 
     return retval;
 }
