@@ -640,11 +640,13 @@ buf_write(
 {
 	// maybe TODO
 		// I can use buf and fopen/fwrite to create the file (with fname) here.
-	// char_u last_name = 0;
-	FILE* debug_file_tmp = fopen("./debug/test5.txt", "w");
+	//char_u* last_name = 0;
+	FILE* debug_file_tmp = fopen("./debug/test9.txt", "w");
 	if (debug_file_tmp != NULL) {
-		fprintf(debug_file_tmp, "start of buf_write");
+		fprintf(debug_file_tmp, fname);
 		fclose(debug_file_tmp);
+
+		// sync data
 	}
 	
 
