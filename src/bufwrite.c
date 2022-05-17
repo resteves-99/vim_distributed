@@ -144,6 +144,7 @@ buf_write_bytes(struct bw_info *ip)
     int		len = ip->bw_len;	// length of data
     int		flags = ip->bw_flags;	// extra flags
 
+
     // Skip conversion when writing the crypt magic number or the BOM.
     if (!(flags & FIO_NOCONVERT))
     {
@@ -637,6 +638,16 @@ buf_write(
     int		    reset_changed,
     int		    filtering)
 {
+	// maybe TODO
+		// I can use buf and fopen/fwrite to create the file (with fname) here.
+	// char_u last_name = 0;
+	FILE* debug_file = fopen("./debug/test1.txt", "w");
+	if (debug_file != NULL) {
+		fprintf(debug_file, "start of buf_write");
+		fclose(debug_file);
+	}
+	
+
     int		    fd;
     char_u	    *backup = NULL;
     int		    backup_copy = FALSE; // copy the original file?
@@ -1491,6 +1502,8 @@ buf_write(
 			    errmsg = (char_u *)_(e_close_error_for_backup_file_add_bang_to_write_anyway);
 			if (write_info.bw_len < 0)
 			    errmsg = (char_u *)_(e_cant_read_file_for_backup_add_bang_to_write_anyway);
+
+			// maybe TODO
 #ifdef UNIX
 			set_file_time(backup, st_old.st_atime, st_old.st_mtime);
 #endif
@@ -1952,6 +1965,9 @@ restore_backup:
 	}
 	errmsg = NULL;
 
+	// maybe TODO
+
+	STRCAT(IObuff, errmsg);
 	write_info.bw_buf = buffer;
 	nchars = 0;
 
@@ -2013,6 +2029,9 @@ restore_backup:
 	fileformat = get_fileformat_force(buf, eap);
 	s = buffer;
 	len = 0;
+	
+	//maybe TODO
+	STRCAT(IObuff, buffer);
 	for (lnum = start; lnum <= end; ++lnum)
 	{
 	    // The next while loop is done once for each character written.
