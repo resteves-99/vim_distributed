@@ -643,7 +643,7 @@ buf_write(
 	//char_u* last_name = 0;
 	FILE* debug_file_tmp = fopen("./debug/test9.txt", "w");
 	if (debug_file_tmp != NULL) {
-		fprintf(debug_file_tmp, fname);
+		fprintf(debug_file_tmp, "%s", fname);
 		fclose(debug_file_tmp);
 
 		// sync data
