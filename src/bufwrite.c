@@ -641,11 +641,11 @@ buf_write(
 	// maybe TODO
 		// I can use buf and fopen/fwrite to create the file (with fname) here.
 	// char_u last_name = 0;
-	FILE* debug_file_tmp = fopen("./debug/test5.txt", "w");
+	/*FILE* debug_file_tmp = fopen("./debug/test5.txt", "w");
 	if (debug_file_tmp != NULL) {
 		fprintf(debug_file_tmp, "start of buf_write");
 		fclose(debug_file_tmp);
-	}
+	}*/
 	
 
     int		    fd;
@@ -1967,7 +1967,6 @@ restore_backup:
 
 	// maybe TODO
 
-	STRCAT(IObuff, errmsg);
 	write_info.bw_buf = buffer;
 	nchars = 0;
 
@@ -2031,7 +2030,7 @@ restore_backup:
 	len = 0;
 	
 	//maybe TODO
-	STRCAT(IObuff, buffer);
+
 	for (lnum = start; lnum <= end; ++lnum)
 	{
 	    // The next while loop is done once for each character written.
