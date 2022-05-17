@@ -641,11 +641,11 @@ buf_write(
 	// maybe TODO
 		// I can use buf and fopen/fwrite to create the file (with fname) here.
 	// char_u last_name = 0;
-	FILE* debug_file_tmp = fopen("./debug/test5.txt", "w");
+	/*FILE* debug_file_tmp = fopen("./debug/test5.txt", "w");
 	if (debug_file_tmp != NULL) {
 		fprintf(debug_file_tmp, "start of buf_write");
 		fclose(debug_file_tmp);
-	}
+	}*/
 	
 
     int		    fd;
