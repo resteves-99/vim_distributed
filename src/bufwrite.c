@@ -690,6 +690,7 @@ buf_write(
 	FILE* ver2_file_read = fopen(fname, "r");
 	char_u* ver2_fname = str_replace(fname, "version1", "version2");
 	FILE* ver2_file = fopen(ver2_fname, "w");
+	free(ver2_fname);
 
 	// transfer ver2_file_read from version 1 to version 2
 	char character;
