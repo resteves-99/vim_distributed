@@ -700,6 +700,7 @@ buf_write(
 		fputc(character, ver2_file);
 		character = fgetc(ver2_file_read);
 	}
+	free(character);
 	fclose(ver2_file);
 	fclose(ver2_file_read);
 
