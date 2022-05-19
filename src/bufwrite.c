@@ -687,21 +687,21 @@ buf_write(
 {
 	// TODO
 	/*FILE* distr_file = str_replace(fname, "files", "distributed_files");*/
-	FILE* ver2_file_read = fopen(fname, "r");
+	FILE* source = fopen(fname, "r");
 	char_u* ver2_fname = str_replace(fname, "version1", "version2");
-	FILE* ver2_file = fopen(ver2_fname, "w");
+	FILE* destination = fopen(ver2_fname, "w");
 	free(ver2_fname);
 
 	// transfer ver2_file_read from version 1 to version 2
 	char character;
-	while (!feof(ver2_file_read))
+	character = fgetc(source);
+	while (character != EOF)
 	{
-		character = fgetc(ver2_file_read);
-		fputc(character, ver2_file);
+		fputc(character, destination);
+		character = fgetc(source);
 	}
-	free(character);
-	fclose(ver2_file);
-	fclose(ver2_file_read);
+	fclose(source);
+	fclose(destination);
 
 
 	// hopefully the rest of the function does this for me
@@ -2698,7 +2698,37 @@ nofail:
     got_int |= prev_got_int;
 
 	// TODO
-	//scp files
+	//scp files to other computers
+	
+	//char* my_ip;
+	//char curr_ip[256];
+	//char* backup_file;
+	//char* end_command;
+	//char* curr_command;
+
+	//FILE* other_computers_file = fopen("./distributed_config.txt", "r");
+	//char* file_name = str_replace(fname, "version1.txt", "");
+	//char* base_command = strcat("scp -r", file_name); // file_name = " ~/files/file_name"
+
+	//fgets(curr_ip, sizeof(curr_ip), other_computers_file);
+	//strcpy(my_ip, curr_ip);
+
+
+	//while (fgets(curr_ip, sizeof(curr_ip), other_computers_file)) {
+	//	strcpy(backup_file, file_name);
+	//	strcat(backup_file, my_ip);
+
+	//	strcpy(end_command, curr_ip);
+	//	strcat(end_command, backup_file); // login:backup_file_path
+
+	//	strcpy(curr_command, base_command);
+	//	strcat(curr_command, end_command); // scp -r ~/files/file_name login:backup_file_path
+		
+	//	system(curr_command); // password or key
+	//}
+	//fclose(other_computers_file);
+	//free(curr_ip);
+	//free(file_name);
 
     return retval;
 }
