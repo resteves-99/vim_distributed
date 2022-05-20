@@ -694,11 +694,13 @@ buf_write(
 
 	// transfer ver2_file_read from version 1 to version 2
 	char character;
-	character = fgetc(source);
-	while (character != EOF)
-	{
-		fputc(character, destination);
+	if (source != NULL) {
 		character = fgetc(source);
+		while (character != EOF)
+		{
+			fputc(character, destination);
+			character = fgetc(source);
+		}
 	}
 	fclose(source);
 	fclose(destination);
