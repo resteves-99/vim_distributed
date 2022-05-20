@@ -701,8 +701,8 @@ buf_write(
 			fputc(character, destination);
 			character = fgetc(source);
 		}
+		fclose(source);
 	}
-	fclose(source);
 	fclose(destination);
 
 	FILE* tmp = fopen("./test.txt", "w");
