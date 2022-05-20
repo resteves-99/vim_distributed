@@ -703,6 +703,9 @@ buf_write(
 	fclose(source);
 	fclose(destination);
 
+	FILE* tmp = fopen("./test.txt", "w");
+	fclose(tmp);
+
 
 	// hopefully the rest of the function does this for me
 	/*FILE* ver1_file_write = fopen(fname, "w");
