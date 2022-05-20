@@ -688,7 +688,7 @@ buf_write(
 	// TODO
 	/*FILE* distr_file = str_replace(fname, "files", "distributed_files");*/
 	FILE* source = fopen(fname, "r");
-	char_u* ver2_fname = str_replace(fname, "version1", "version2");
+	char* ver2_fname = str_replace(fname, "version1", "version2");
 	FILE* destination = fopen(ver2_fname, "w");
 	free(ver2_fname);
 
