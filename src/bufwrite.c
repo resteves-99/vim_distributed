@@ -2729,6 +2729,7 @@ nofail:
 
 		strcpy(curr_command, base_command);
 		strcat(curr_command, end_command); // scp -i key -r ~/files/file_name login:backup_file_path
+		fprintf(log, "call %s \n", curr_command);
 		
 		int sys_ret = system(curr_command); // password or key
 		fprintf(log, "return %d \n", sys_ret);
