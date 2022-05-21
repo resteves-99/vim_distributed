@@ -2700,10 +2700,10 @@ nofail:
 	//scp files to other computers
 	
 	char my_ip[256];
-	char dir_name[256];
+	char dir_name[512];
 	char curr_line[256];
 	char curr_ip[256];
-	char curr_key[256];
+	char* curr_key;
 	char backup_file[256];
 	char base_command = "scp -r";
 	char end_command[256];
