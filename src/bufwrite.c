@@ -2703,7 +2703,7 @@ nofail:
 	char* curr_ip;
 	char* curr_key;
 	char backup_file[512];
-	char base_command[512] = "scp -i ";
+	char base_command[512] = "scp -r -i ";
 	char end_command[512];
 	char curr_command[512];
 
@@ -2718,7 +2718,7 @@ nofail:
 		curr_key = strtok(NULL, " ");
 		fprintf(log, "split %s // %s \n", curr_ip, curr_key);
 		strcat(base_command, curr_key);
-		strcat(base_command, " -r ");
+		strcat(base_command, " ");
 		fprintf(log, "base tmp %s \n", base_command);
 
 
