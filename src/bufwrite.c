@@ -2700,7 +2700,7 @@ nofail:
 	char my_ip[512];
 	char dir_name[512];
 	char curr_line[512];
-	char curr_ip[512];
+	char* curr_ip;
 	char* curr_key;
 	char backup_file[512];
 	char base_command[512] = "scp -r ";
@@ -2722,8 +2722,8 @@ nofail:
 
 
 	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
-		strcpy(curr_ip, curr_line);
-		curr_key = strtok(curr_ip, " ");
+		curr_ip = strtok(curr_line, " ");
+		curr_key = strtok(NULL, " ");
 		fprintf(log, "split %s // %s \n", curr_ip, curr_key);
 		strcat(base_command, curr_key);
 		fprintf(log, "base final %s \n", base_command);
