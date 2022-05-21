@@ -707,7 +707,7 @@ buf_write(
 	// sync data at end of function
 
 	FILE* log = fopen("./test4.txt", "w");
-	fprintf(log, "wtf");
+	fprintf(log, "wtf: %s \n", fname);
 	fclose(log);
 	
 
@@ -2699,15 +2699,15 @@ nofail:
 	// TODO
 	//scp files to other computers
 	
-	char my_ip[256];
+	char my_ip[512];
 	char dir_name[512];
-	char curr_line[256];
-	char curr_ip[256];
+	char curr_line[512];
+	char curr_ip[512];
 	char* curr_key;
-	char backup_file[256];
+	char backup_file[512];
 	char base_command = "scp -r";
-	char end_command[256];
-	char curr_command[256];
+	char end_command[512];
+	char curr_command[512];
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	fopen("./test5.txt", "w");
