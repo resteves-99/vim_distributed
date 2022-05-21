@@ -2696,6 +2696,7 @@ nofail:
 	//scp files to other computers
 	
 	char* my_ip;
+	char* dir_name;
 	char curr_line[256];
 	char curr_ip[256];
 	char* curr_key;
@@ -2707,7 +2708,9 @@ nofail:
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	fopen("./test4.txt", "w");
-	char* dir_name = str_replace(fname, "/version1.txt", "");
+	int dir_name_size = strlen(fname) - 13;
+	strcpy(dir_name, fname);
+	dir_name[dir_name_size] = '\0';
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
 	fopen("./test1.txt", "w");
 
