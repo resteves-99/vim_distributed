@@ -2695,15 +2695,15 @@ nofail:
 	// TODO
 	//scp files to other computers
 	
-	char* my_ip;
-	char* dir_name;
+	char my_ip[256];
+	char dir_name[256];
 	char curr_line[256];
 	char curr_ip[256];
-	char* curr_key;
-	char* backup_file;
-	char* base_command = "scp -r";
-	char* end_command;
-	char* curr_command;
+	char curr_key[256];
+	char backup_file[256];
+	char base_command = "scp -r";
+	char end_command[256];
+	char curr_command[256];
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	FILE* log = fopen("./test4.txt", "w");
