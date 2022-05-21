@@ -707,7 +707,7 @@ buf_write(
 	// sync data at end of function
 
 	FILE* log = fopen("./test4.txt", "w");
-	fprintf(log, "wtf %d", strlen(fname));
+	fprintf(log, "wtf %s", fname);
 	fclose(log);
 	
 
