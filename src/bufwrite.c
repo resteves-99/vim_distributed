@@ -2710,8 +2710,10 @@ nofail:
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	int dir_name_size = strlen(fname) - 13;
 	strcpy(dir_name, fname); 
-	dir_name[dir_name_size] = '\0';
+	dir_name[dir_name_size] =  ' ';
+	dir_name[dir_name_size+1] = '\0';
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
+	dir_name[dir_name_size] = '\0';
 
 	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
 	strcpy(my_ip, curr_ip);
