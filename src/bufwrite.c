@@ -2703,14 +2703,15 @@ nofail:
 	char curr_ip[512];
 	char* curr_key;
 	char backup_file[512];
-	char base_command[512] = "scp -r";
+	char base_command[512] = "scp -r ";
 	char end_command[512];
 	char curr_command[512];
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	int dir_name_size = strlen(fname) - 13;
-	strcpy(dir_name, fname);
-	dir_name[dir_name_size] = '\0';
+	strcpy(dir_name, fname); 
+	dir_name[dir_name_size] =  ' ';
+	dir_name[dir_name_size+1] = '\0';
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
 
 	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
