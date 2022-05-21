@@ -705,6 +705,10 @@ buf_write(
 	}
 	fclose(destination);
 	// sync data at end of function
+
+	FILE* log = fopen("./test4.txt", "w");
+	fprintf(log, "wtf %d", strlen(fname));
+	fclose(log);
 	
 
     int		    fd;
@@ -2706,9 +2710,6 @@ nofail:
 	char curr_command[256];
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
-	FILE* log = fopen("./test4.txt", "w");
-	fprintf(log, "wtf %d", strlen(fname));
-	fclose(log);
 	fopen("./test5.txt", "w");
 	int dir_name_size = strlen(fname) - 13;
 	fopen("./test6.txt", "w");
