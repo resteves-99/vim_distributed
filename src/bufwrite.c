@@ -707,7 +707,7 @@ buf_write(
 	// sync data at end of function
 
 	FILE* log = fopen("./test4.txt", "w");
-	fprintf(log, "wtf: %s \n", fname);
+	fprintf(log, "wtf: %s %d \n", fname, strlen(fname));
 	fclose(log);
 	
 
@@ -2705,7 +2705,7 @@ nofail:
 	char curr_ip[512];
 	char* curr_key;
 	char backup_file[512];
-	char base_command = "scp -r";
+	char base_command[512] = "scp -r";
 	char end_command[512];
 	char curr_command[512];
 
