@@ -2711,6 +2711,7 @@ nofail:
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	char* dir_name = str_replace(fname, "/version1.txt", "");
 	char* base_command = strcat("scp -r", dir_name); // dir_name = " ~/files/dir_name"
+	fopen("./test1.txt", "w");
 
 	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
 	strcpy(my_ip, curr_ip);
@@ -2731,9 +2732,8 @@ nofail:
 		
 		system(curr_command); // password or key
 	}
+	fopen("./test2.txt", "w");
 	fclose(other_computers_file);
-	free(curr_ip);
-	free(curr_line);
 	free(dir_name);
 
     return retval;
