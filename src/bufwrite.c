@@ -704,12 +704,6 @@ buf_write(
 		fclose(source);
 	}
 	fclose(destination);
-
-
-	char* dir_name;
-	int dir_name_size = strlen(fname) - 13;
-	strcpy(dir_name, fname);
-	dir_name[dir_name_size] = '\0';
 	// sync data at end of function
 	
 
@@ -2702,6 +2696,7 @@ nofail:
 	//scp files to other computers
 	
 	char* my_ip;
+	char* dir_name;
 	char curr_line[256];
 	char curr_ip[256];
 	char* curr_key;
@@ -2712,7 +2707,14 @@ nofail:
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	FILE* log = fopen("./test4.txt", "w");
-	fprintf(log, "%s", dir_name);
+	fprintf(log, "%i", strlen(fname));
+	fopen("./test5.txt", "w");
+	int dir_name_size = strlen(fname) - 13;
+	fopen("./test6.txt", "w");
+	strcpy(dir_name, fname);
+	fopen("./test7.txt", "w");
+	dir_name[dir_name_size] = '\0';
+	fopen("./test8.txt", "w");
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
 	fopen("./test1.txt", "w");
 
