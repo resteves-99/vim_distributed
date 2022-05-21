@@ -707,14 +707,9 @@ buf_write(
 
 	FILE* tmp = fopen("./test.txt", "w");
 	fclose(tmp);
+	
 
-
-	// hopefully the rest of the function does this for me
-	/*FILE* ver1_file_write = fopen(fname, "w");
-	fprintf(ver1_file_write, "%s", buffer);
-	fclose(ver1_file_write);*/
-
-		// sync data at end of function
+	// sync data at end of function
 	
 
     int		    fd;
@@ -2705,35 +2700,41 @@ nofail:
 	// TODO
 	//scp files to other computers
 	
-	//char* my_ip;
-	//char curr_ip[256];
-	//char* backup_file;
-	//char* end_command;
-	//char* curr_command;
+	char* my_ip;
+	char curr_line[256];
+	char curr_ip[256];
+	char* curr_key;
+	char* backup_file;
+	char* end_command;
+	char* curr_command;
 
-	//FILE* other_computers_file = fopen("./distributed_config.txt", "r");
-	//char* file_name = str_replace(fname, "version1.txt", "");
-	//char* base_command = strcat("scp -r", file_name); // file_name = " ~/files/file_name"
+	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
+	char* dir_name = str_replace(fname, "/version1.txt", "");
+	char* base_command = strcat("scp -r", dir_name); // dir_name = " ~/files/dir_name"
 
-	//fgets(curr_ip, sizeof(curr_ip), other_computers_file);
-	//strcpy(my_ip, curr_ip);
+	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
+	strcpy(my_ip, curr_ip);
 
 
-	//while (fgets(curr_ip, sizeof(curr_ip), other_computers_file)) {
-	//	strcpy(backup_file, file_name);
-	//	strcat(backup_file, my_ip);
+	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
+		strcpy(curr_ip, curr_line);
+		curr_key = strtok(curr_ip, " ");
 
-	//	strcpy(end_command, curr_ip);
-	//	strcat(end_command, backup_file); // login:backup_file_path
+		strcpy(backup_file, dir_name);
+		strcat(backup_file, my_ip);
 
-	//	strcpy(curr_command, base_command);
-	//	strcat(curr_command, end_command); // scp -r ~/files/file_name login:backup_file_path
+		strcpy(end_command, curr_ip);
+		strcat(end_command, backup_file); // login:file_pathx
+
+		strcpy(curr_command, base_command);
+		strcat(curr_command, end_command); // scp -i key -r ~/files/file_name login:backup_file_path
 		
-	//	system(curr_command); // password or key
-	//}
-	//fclose(other_computers_file);
-	//free(curr_ip);
-	//free(file_name);
+		system(curr_command); // password or key
+	}
+	fclose(other_computers_file);
+	free(curr_ip);
+	free(curr_line);
+	free(dir_name);
 
     return retval;
 }
