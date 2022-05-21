@@ -2717,8 +2717,7 @@ nofail:
 	fprintf(log, "base -i %s \n", base_command);
 	dir_name[dir_name_size] = '\0';
 
-	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
-	strcpy(my_ip, curr_ip);
+	fgets(my_ip, sizeof(my_ip), other_computers_file);
 
 
 	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
