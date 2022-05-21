@@ -2714,7 +2714,7 @@ nofail:
 	dir_name[dir_name_size+1] = '\0';
 	strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
 	strcat(base_command, " -i "); // "scp -r ~/files/dir_name -i "
-	fprintf(log, "base -i %s", base_command);
+	fprintf(log, "base -i %s \n", base_command);
 	dir_name[dir_name_size] = '\0';
 
 	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
@@ -2725,6 +2725,7 @@ nofail:
 		strcpy(curr_ip, curr_line);
 		curr_key = strtok(curr_ip, " ");
 		strcat(base_command, curr_key);
+		fprintf(log, "base final %s \n", base_command);
 
 		strcpy(backup_file, dir_name);
 		strcat(backup_file, my_ip);
