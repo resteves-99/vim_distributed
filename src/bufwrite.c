@@ -2712,7 +2712,8 @@ nofail:
 	strcpy(dir_name, fname); 
 	dir_name[dir_name_size] =  ' ';
 	dir_name[dir_name_size+1] = '\0';
-	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
+	strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
+	strcat(base_command, " -i "); // "scp -r ~/files/dir_name -i "
 	dir_name[dir_name_size] = '\0';
 
 	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
