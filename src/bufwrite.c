@@ -2706,7 +2706,8 @@ nofail:
 	char* curr_command;
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
-	fopen("./test4.txt", "w");
+	FILE* log = fopen("./test4.txt", "w");
+	fprintf(log, "%i", strlen(fname));
 	int dir_name_size = strlen(fname) - 13;
 	strcpy(dir_name, fname);
 	dir_name[dir_name_size] = '\0';
