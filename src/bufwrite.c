@@ -2724,6 +2724,7 @@ nofail:
 	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
 		strcpy(curr_ip, curr_line);
 		curr_key = strtok(curr_ip, " ");
+		fprintf(log, "split %s // %s \n", curr_ip, curr_key);
 		strcat(base_command, curr_key);
 		fprintf(log, "base final %s \n", base_command);
 
