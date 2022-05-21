@@ -704,11 +704,6 @@ buf_write(
 		fclose(source);
 	}
 	fclose(destination);
-
-	FILE* tmp = fopen("./test.txt", "w");
-	fclose(tmp);
-	
-
 	// sync data at end of function
 	
 
@@ -2711,6 +2706,7 @@ nofail:
 	fopen("./test3.txt", "w");
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
+	fopen("./test4.txt", "w");
 	char* dir_name = str_replace(fname, "/version1.txt", "");
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
 	fopen("./test1.txt", "w");
