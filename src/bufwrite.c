@@ -2703,19 +2703,12 @@ nofail:
 	char* curr_ip;
 	char* curr_key;
 	char backup_file[512];
-	char base_command[512] = "scp -r ";
+	char base_command[512] = "scp -i ";
 	char end_command[512];
 	char curr_command[512];
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	int dir_name_size = strlen(fname) - 13;
-	strcpy(dir_name, fname); 
-	dir_name[dir_name_size] =  ' ';
-	dir_name[dir_name_size+1] = '\0';
-	strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
-	strcat(base_command, " -i "); // "scp -r ~/files/dir_name -i "
-	fprintf(log, "base -i %s \n", base_command);
-	dir_name[dir_name_size] = '\0';
 
 	fgets(my_ip, sizeof(my_ip), other_computers_file);
 
@@ -2725,7 +2718,16 @@ nofail:
 		curr_key = strtok(NULL, " ");
 		fprintf(log, "split %s // %s \n", curr_ip, curr_key);
 		strcat(base_command, curr_key);
+		strcat(base_command, " -r ");
+		fprintf(log, "base tmp %s \n", base_command);
+
+
+		strcpy(dir_name, fname);
+		dir_name[dir_name_size] = ' ';
+		dir_name[dir_name_size + 1] = '\0';
+		strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
 		fprintf(log, "base final %s \n", base_command);
+		dir_name[dir_name_size] = '\0';
 
 		strcpy(backup_file, dir_name);
 		strcat(backup_file, my_ip);
