@@ -2707,6 +2707,7 @@ nofail:
 	char* backup_file;
 	char* end_command;
 	char* curr_command;
+	fopen("./test3.txt", "w");
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	char* dir_name = str_replace(fname, "/version1.txt", "");
