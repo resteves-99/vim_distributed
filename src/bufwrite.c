@@ -705,10 +705,6 @@ buf_write(
 	}
 	fclose(destination);
 	// sync data at end of function
-
-	FILE* log = fopen("./test4.txt", "w");
-	fprintf(log, "wtf: %s %d \n", fname, strlen(fname));
-	fclose(log);
 	
 
     int		    fd;
@@ -2698,6 +2694,8 @@ nofail:
 
 	// TODO
 	//scp files to other computers
+	FILE* log = fopen("./log.txt", "w");
+	fprintf(log, "wtf: %s %d \n", fname, strlen(fname));
 	
 	char my_ip[512];
 	char dir_name[512];
@@ -2710,15 +2708,10 @@ nofail:
 	char curr_command[512];
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
-	fopen("./test5.txt", "w");
 	int dir_name_size = strlen(fname) - 13;
-	fopen("./test6.txt", "w");
 	strcpy(dir_name, fname);
-	fopen("./test7.txt", "w");
 	dir_name[dir_name_size] = '\0';
-	fopen("./test8.txt", "w");
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
-	fopen("./test1.txt", "w");
 
 	fgets(curr_ip, sizeof(curr_ip), other_computers_file);
 	strcpy(my_ip, curr_ip);
@@ -2737,11 +2730,11 @@ nofail:
 		strcpy(curr_command, base_command);
 		strcat(curr_command, end_command); // scp -i key -r ~/files/file_name login:backup_file_path
 		
-		system(curr_command); // password or key
+		int sys_ret = system(curr_command); // password or key
+		fprintf(log, "return %d \n", sys_ret);
 	}
-	fopen("./test2.txt", "w");
+	fclose(log);
 	fclose(other_computers_file);
-	free(dir_name);
 
     return retval;
 }
