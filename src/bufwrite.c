@@ -2704,13 +2704,13 @@ nofail:
 	char* base_command = "scp -r";
 	char* end_command;
 	char* curr_command;
-	fopen("./test3.txt", "w");
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	fopen("./test4.txt", "w");
 	int dir_name_size = strlen(fname) - 13;
 	strcpy(dir_name, fname);
 	dir_name[dir_name_size] = '\0';
+	fopen("./test5.txt", "w");
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
 	fopen("./test1.txt", "w");
 
