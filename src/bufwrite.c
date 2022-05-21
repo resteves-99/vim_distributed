@@ -2712,6 +2712,7 @@ nofail:
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	FILE* log = fopen("./test4.txt", "w");
+	fprintf(log, "%s", dir_name);
 	strcat(base_command, dir_name); // dir_name = " ~/files/dir_name"
 	fopen("./test1.txt", "w");
 
