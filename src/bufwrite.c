@@ -2713,35 +2713,35 @@ nofail:
 	fgets(my_ip, sizeof(my_ip), other_computers_file);
 
 
-	//while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
-	//	curr_ip = strtok(curr_line, " ");
-	//	curr_key = strtok(NULL, " ");
-	//	fprintf(log, "split %s // %s \n", curr_ip, curr_key);
-	//	strcat(base_command, curr_key);
-	//	strcat(base_command, " ");
-	//	fprintf(log, "base tmp %s \n", base_command);
+	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
+		curr_ip = strtok(curr_line, " ");
+		curr_key = strtok(NULL, " ");
+		fprintf(log, "split %s // %s \n", curr_ip, curr_key);
+		strcat(base_command, curr_key);
+		strcat(base_command, " ");
+		fprintf(log, "base tmp %s \n", base_command);
 
 
-	//	strcpy(dir_name, fname);
-	//	dir_name[dir_name_size] = ' ';
-	//	dir_name[dir_name_size + 1] = '\0';
-	//	strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
-	//	fprintf(log, "base final %s \n", base_command);
-	//	dir_name[dir_name_size] = '\0';
+		strcpy(dir_name, fname);
+		dir_name[dir_name_size] = ' ';
+		dir_name[dir_name_size + 1] = '\0';
+		strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
+		fprintf(log, "base final %s \n", base_command);
+		dir_name[dir_name_size] = '\0';
 
-	//	strcpy(backup_file, dir_name);
-	//	strcat(backup_file, my_ip);
+		strcpy(backup_file, dir_name);
+		strcat(backup_file, my_ip);
 
-	//	strcpy(end_command, curr_ip);
-	//	strcat(end_command, backup_file); // login:file_pathx
+		strcpy(end_command, curr_ip);
+		strcat(end_command, backup_file); // login:file_pathx
 
-	//	strcpy(curr_command, base_command);
-	//	strcat(curr_command, end_command); // scp -i key -r ~/files/file_name login:backup_file_path
-	//	fprintf(log, "call %s \n", curr_command);
-	//	
-	//	int sys_ret = system(curr_command); // password or key
-	//	fprintf(log, "return %d \n", sys_ret);
-	//}
+		strcpy(curr_command, base_command);
+		strcat(curr_command, end_command); // scp -i key -r ~/files/file_name login:backup_file_path
+		fprintf(log, "call %s \n", curr_command);
+		
+		int sys_ret = system(curr_command); // password or key
+		fprintf(log, "return %d \n", sys_ret);
+	}
 	fclose(log);
 	fclose(other_computers_file);
 
