@@ -2744,7 +2744,7 @@ nofail:
 
 		lab_dir_name[lab_dir_name_size] = ' ';
 		lab_dir_name[lab_dir_name_size + 1] = '\0';
-		strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
+		strcat(base_command, lab_dir_name); // "scp -r -i ~/files/dir_name "
 		fprintf(log, "base final %s \n", base_command);
 		lab_dir_name[lab_dir_name_size] = '\0';
 
