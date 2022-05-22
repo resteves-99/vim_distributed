@@ -2697,7 +2697,7 @@ nofail:
 	FILE* log = fopen("./log.txt", "w");
 	fprintf(log, "wtf: %s %d \n", fname, strlen(fname));
 	
-	char my_ip[512];
+	char* my_ip;
 	char dir_name[512];
 	char lab_dir_name[512];
 	char cp_command[512] = "cp -R ";
@@ -2715,7 +2715,8 @@ nofail:
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
 	int dir_name_size = strlen(fname) - 13;
 
-	fgets(my_ip, sizeof(my_ip), other_computers_file);
+	fgets(curr_line, sizeof(curr_line), other_computers_file);
+	my_ip = strtok(curr_line, " ");
 
 
 	// create copy of directory labeled with our server number
