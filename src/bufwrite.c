@@ -2728,10 +2728,13 @@ nofail:
 	strcat(lab_dir_name, my_ip);
 	strcat(cp_command, lab_dir_name); // cp -R dir lab_dir
 	strcat(rm_command, lab_dir_name); // rm -rf lab_dir
+
+	fprintf(log, "rm call %s \n", rm_command);
+	fprintf(log, "cp call %s \n\n", cp_command);
 	system(rm_command); // copy will rename dir to lab_dir inside of copying into lab_dir
 	system(cp_command);
-	int lab_dir_name_size = strlen(lab_dir_name);
 
+	strcat(lab_dir_name, " ");
 	// loop through IPs provided. scp labeled directory to each of them
 	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
 		curr_ip = strtok(curr_line, " ");
@@ -2741,12 +2744,8 @@ nofail:
 		strcat(base_command, " ");
 		fprintf(log, "base tmp %s \n", base_command);
 
-
-		lab_dir_name[lab_dir_name_size] = ' ';
-		lab_dir_name[lab_dir_name_size + 1] = '\0';
 		strcat(base_command, lab_dir_name); // "scp -r -i ~/files/dir_name "
 		fprintf(log, "base final %s \n", base_command);
-		lab_dir_name[lab_dir_name_size] = '\0';
 
 		strcpy(end_command, curr_ip);
 		strcat(end_command, file_path); // login:file_path
