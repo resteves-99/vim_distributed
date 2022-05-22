@@ -2699,9 +2699,14 @@ nofail:
 	
 	char my_ip[512];
 	char dir_name[512];
+	char lab_dir_name[512];
+	char cp_command[512] = "cp -R ";
+	char rm_command[512] = "rm -rf ";
+
 	char curr_line[512];
 	char* curr_ip;
 	char* curr_key;
+	char* file_path = "~/files/";
 	char backup_file[512];
 	char base_command[512] = "scp -r -i ";
 	char end_command[512];
@@ -2713,6 +2718,21 @@ nofail:
 	fgets(my_ip, sizeof(my_ip), other_computers_file);
 
 
+	// create copy of directory labeled with our server number
+	strcpy(dir_name, fname);
+	dir_name[dir_name_size] = ' ';
+	dir_name[dir_name_size + 1] = '\0';
+	strcat(cp_command, dir_name); // "cp -R dir "
+	dir_name[dir_name_size] = '\0';
+	strcpy(lab_dir_name, dir_name);
+	strcat(lab_dir_name, my_ip);
+	strcat(cp_command, lab_dir_name); // cp -R dir lab_dir
+	strcat(rm_command, lab_dir_name); // rm -rf lab_dir
+	system(rm_command); // copy will rename dir to lab_dir inside of copying into lab_dir
+	system(cp_command);
+	int lab_dir_name_size = strlen(lab_dir_name);
+
+	// loop through IPs provided. scp labeled directory to each of them
 	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
 		curr_ip = strtok(curr_line, " ");
 		curr_key = strtok(NULL, " ");
@@ -2722,24 +2742,20 @@ nofail:
 		fprintf(log, "base tmp %s \n", base_command);
 
 
-		strcpy(dir_name, fname);
-		dir_name[dir_name_size] = ' ';
-		dir_name[dir_name_size + 1] = '\0';
+		lab_dir_name[lab_dir_name_size] = ' ';
+		lab_dir_name[lab_dir_name_size + 1] = '\0';
 		strcat(base_command, dir_name); // "scp -r ~/files/dir_name"
 		fprintf(log, "base final %s \n", base_command);
-		dir_name[dir_name_size] = '\0';
-
-		strcpy(backup_file, dir_name);
-		strcat(backup_file, my_ip);
+		lab_dir_name[lab_dir_name_size] = '\0';
 
 		strcpy(end_command, curr_ip);
-		strcat(end_command, backup_file); // login:file_pathx
+		strcat(end_command, file_path); // login:file_path
 
 		strcpy(curr_command, base_command);
-		strcat(curr_command, end_command); // scp -i key -r ~/files/file_name login:backup_file_path
+		strcat(curr_command, end_command); // scp -i -r key ~/files/lab_dir_name login:file_path
 		fprintf(log, "call %s \n", curr_command);
 		
-		int sys_ret = system(curr_command); // password or key
+		int sys_ret = system(curr_command); 
 		fprintf(log, "return %d \n", sys_ret);
 	}
 	fclose(log);
