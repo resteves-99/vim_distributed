@@ -2712,7 +2712,7 @@ nofail:
 	char end_command[512];
 	char curr_command[512];
 
-	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my ip, other = address: key
+	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my name, other = "address key name "
 	int dir_name_size = strlen(fname) - 13;
 
 	fgets(curr_line, sizeof(curr_line), other_computers_file);
