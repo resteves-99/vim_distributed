@@ -89,6 +89,53 @@ filemess(
     msg_scrolled_ign = FALSE;
 }
 
+// You must free the result if result is non-NULL.
+char* str_replace(char* orig, char* rep, char* with) {
+	char* result; // the return string
+	char* ins;    // the next insert point
+	char* tmp;    // varies
+	int len_rep;  // length of rep (the string to remove)
+	int len_with; // length of with (the string to replace rep with)
+	int len_front; // distance between rep and end of last rep
+	int count;    // number of replacements
+
+	// sanity checks and initialization
+	if (!orig || !rep)
+		return NULL;
+	len_rep = strlen(rep);
+	if (len_rep == 0)
+		return NULL; // empty rep causes infinite loop during count
+	if (!with)
+		with = "";
+	len_with = strlen(with);
+
+	// count the number of replacements needed
+	ins = orig;
+	for (count = 0; tmp = strstr(ins, rep); ++count) {
+		ins = tmp + len_rep;
+	}
+
+	tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+
+	if (!result)
+		return NULL;
+
+	// first time through the loop, all the variable are set correctly
+	// from here on,
+	//    tmp points to the end of the result string
+	//    ins points to the next occurrence of rep in orig
+	//    orig points to the remainder of orig after "end of rep"
+	while (count--) {
+		ins = strstr(orig, rep);
+		len_front = ins - orig;
+		tmp = strncpy(tmp, orig, len_front) + len_front;
+		tmp = strcpy(tmp, with) + len_with;
+		orig += len_front + len_rep; // move to next "end of rep"
+	}
+	strcpy(tmp, orig);
+	return result;
+}
+
 /*
  * Read lines from file "fname" into the buffer after line "from".
  *
@@ -124,6 +171,70 @@ readfile(
     exarg_T	*eap,			// can be NULL!
     int		flags)
 {
+	// TODO
+	// compare our file with the files from other computers
+
+	// open and read our files
+	FILE* curr_version = fopen(fname, "r+");
+	char* ver2_fname = str_replace(fname, "version1", "version2");
+	FILE* last_version = fopen(ver2_fname, "r+");
+	free(ver2_fname);
+	char *curr_version_str, *last_version_str;
+	getdelim(curr_version_str, 0, '/0', curr_version);
+	getdelim(last_version_str, 0, '/0', last_version);
+
+	char curr_config_line[512];
+	char* other_fname;
+	char* other_server_name;
+	char *other_curr_version_str, *other_last_version_str;
+
+	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my name, other = "address key name "
+	fgets(curr_config_line, sizeof(curr_config_line), other_computers_file);
+
+	// loop over other computers
+	while (fgets(curr_config_line, sizeof(curr_config_line), other_computers_file)) {
+		// construct file name for other computer
+		strtok(curr_config_line, " ");
+		strtok(NULL, " "); 
+		other_server_name = strtok(NULL, " ");
+		strcpy(other_fname, fname);
+		strcat(other_fname, other_server_name); // maybe this needs a space between them?
+
+		// open and read other files
+		FILE* curr_version_other = fopen(fname, "r+");
+		char* ver2_fname = str_replace(fname, "version1", "version2");
+		FILE* last_version_other = fopen(ver2_fname, "r+");
+		free(ver2_fname);
+		char* other_curr_version_str, * other_last_version_str;
+		getdelim(other_curr_version_str, 0, '/0', curr_version);
+		getdelim(other_last_version_str, 0, '/0', last_version);
+
+		// if both computers have same file
+		if (!strcmp(curr_version_str, other_curr_version_str)) {
+			continue;
+		}
+		// if we updated file and other computer hasn't
+		if (!strcmp(last_version_str, other_curr_version_str)) {
+			continue;
+		}
+		// if other computer updated file and we haven't
+		if (!strcmp(curr_version_str, other_last_version_str)) {
+			// copy other file to ours
+			pass;
+		}
+		// if we both changed file
+		else {
+			// conflict
+			pass;
+		}
+
+		free(other_curr_version_str);
+		free(other_last_version_str);
+	}
+	free(curr_version_str);
+	free(last_version_str);
+		
+
     int		fd = 0;
     int		newfile = (flags & READ_NEW);
     int		check_readonly;
