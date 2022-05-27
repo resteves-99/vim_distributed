@@ -194,7 +194,6 @@ void merge_files(char_u* fname) {
 	}
 	free(curr_version_str);
 	free(last_version_str);
-	if
 }
 
 /*
