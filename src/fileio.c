@@ -94,6 +94,7 @@ filemess(
 void merge_files(char_u* fname) {
 	// TODO
 	// compare our file with the files from other computers
+	FILE* log = fopen("./log.txt", "w");
 
 	// open and read our files
 	FILE* curr_version = fopen(fname, "r");
@@ -103,12 +104,14 @@ void merge_files(char_u* fname) {
 	char* curr_version_str, * last_version_str;
 	if (curr_version) {
 		getdelim(&curr_version_str, 0, '/0', curr_version);
+		fclose(curr_version);
 	}
 	else {
 		curr_version_str = "";
 	}
 	if (last_version) {
 		getdelim(&last_version_str, 0, '/0', last_version);
+		fclose(last_version);
 	}
 	else {
 		last_version_str = "";
@@ -129,6 +132,7 @@ void merge_files(char_u* fname) {
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
+		fprintf(log, "other_server_name %s", other_server_name);
 		strcpy(other_fname, fname);
 		strcat(other_fname, other_server_name); // maybe this needs a space between them?
 
@@ -143,6 +147,8 @@ void merge_files(char_u* fname) {
 		char* other_curr_version_str, * other_last_version_str;
 		getdelim(&other_curr_version_str, 0, '/0', curr_version);
 		getdelim(&other_last_version_str, 0, '/0', last_version);
+		fclose(curr_version_other);
+		fclose(last_version_other);
 
 		// if both computers have same file
 		if (!strcmp(curr_version_str, other_curr_version_str)) { // strcmp return false if equal
@@ -155,8 +161,6 @@ void merge_files(char_u* fname) {
 		// if other computer updated file and we haven't or if ours is empty and theirs isn't
 		if (!strcmp(curr_version_str, other_last_version_str) || strlen(curr_version_str) == 0 && strlen(other_curr_version_str) > 0) {
 			// copy other file to ours
-			if(curr_version) fclose(curr_version);
-			if(last_version) fclose(last_version);
 
 			FILE* curr_version_write = fopen(fname, "w");
 			char* ver2_fname = str_replace(fname, "version1", "version2");
@@ -172,23 +176,17 @@ void merge_files(char_u* fname) {
 
 			getdelim(&curr_version_str, 0, '/0', curr_version);
 			getdelim(&last_version_str, 0, '/0', last_version);
+			fclose(curr_version);
+			fclose(last_version);
 		}
 		// if we both changed file
 		else {
 			// conflict
 			// append other file to ours
-			fclose(curr_version);
-			fclose(last_version);
-
 			FILE* curr_version_write = fopen(fname, "a");
 			fprintf(curr_version_write, "=====CONFLICT=====\n");
 			fprintf(curr_version_write, other_last_version_str);
 			fclose(curr_version_write);
-
-			curr_version = fopen(fname, "r");
-			char* ver2_fname = str_replace(fname, "version1", "version2");
-			last_version = fopen(ver2_fname, "r");
-			free(ver2_fname);
 		}
 
 		free(other_curr_version_str);
@@ -196,6 +194,7 @@ void merge_files(char_u* fname) {
 	}
 	free(curr_version_str);
 	free(last_version_str);
+	if
 }
 
 /*
