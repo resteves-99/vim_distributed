@@ -94,7 +94,7 @@ filemess(
 void merge_files(char_u* fname) {
 	// TODO
 	// compare our file with the files from other computers
-	FILE* log = fopen("./log.txt", "w");
+	FILE* log = fopen("./log2.txt", "w");
 	fprintf(log, "startring");
 
 	// open and read our files
