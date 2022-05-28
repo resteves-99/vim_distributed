@@ -180,15 +180,17 @@ void merge_files(char_u* fname) {
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
-		fprintf(log, "other_server_name %s\n", other_server_name);
 		strcpy(other_fname, fname);
 		strcat(other_fname, other_server_name); // maybe this needs a space between them?
+		fprintf(log, "other_fname %s\n", other_fname);
 
 		// open and read other files
 		FILE* curr_version_other = fopen(other_fname, "r");
 		if (!curr_version_other) {
+			fprintf(log, "skipped\n");
 			continue;
 		}
+		fprintf(log, "didnt skip\n");
 		char* other_ver2_fname = str_replace_fio(other_fname, "version1", "version2");
 		FILE* last_version_other = fopen(other_ver2_fname, "r");
 		free(other_ver2_fname);
