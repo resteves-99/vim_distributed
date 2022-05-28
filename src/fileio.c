@@ -180,9 +180,7 @@ void merge_files(char_u* fname) {
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
-		fprintf(log, "fail\n");
 		strcpy(other_fname, fname);
-		fprintf(log, "other_fname %s, other_server_name %s\n", other_fname, other_server_name);
 		strcat(other_fname, other_server_name); // maybe this needs a space between them?
 		fprintf(log, "other_fname %s\n", other_fname);
 
@@ -245,8 +243,8 @@ void merge_files(char_u* fname) {
 		free(other_last_version_str);
 	}
 	fprintf(log, "finished\n");
-	free(curr_version_str);
-	free(last_version_str);
+	//free(curr_version_str);
+	//free(last_version_str);
 	fclose(log);
 	return;
 }
