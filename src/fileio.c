@@ -96,6 +96,7 @@ void merge_files(char_u* fname) {
 	// compare our file with the files from other computers
 	FILE* log = fopen("./log.txt", "a");
 	setvbuf(log, NULL, _IOLBF, BUFSIZ);
+	fprintf(log, "starting %s\n", fname);
 
 	// open and read our files
 	FILE* curr_version = fopen(fname, "r");
