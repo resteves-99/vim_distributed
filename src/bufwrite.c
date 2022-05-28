@@ -609,7 +609,7 @@ new_file_message(void)
 }
 
 // You must free the result if result is non-NULL.
-char* str_replace(char* orig, char* rep, char* with) {
+char* str_replace_bw(char* orig, char* rep, char* with) {
 	char* result; // the return string
 	char* ins;    // the next insert point
 	char* tmp;    // varies
@@ -688,7 +688,7 @@ buf_write(
 	// TODO
 	/*FILE* distr_file = str_replace(fname, "files", "distributed_files");*/
 	FILE* source = fopen(fname, "r");
-	char* ver2_fname = str_replace(fname, "version1", "version2");
+	char* ver2_fname = str_replace_bw(fname, "version1", "version2");
 	FILE* destination = fopen(ver2_fname, "w");
 	free(ver2_fname);
 
