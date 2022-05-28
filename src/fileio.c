@@ -95,7 +95,7 @@ void merge_files(char_u* fname) {
 	// TODO
 	// compare our file with the files from other computers
 	FILE* log = fopen("./log.txt", "a");
-	fprintf(log, "%s", "starting");
+	fprintf(log, "starting");
 
 	// open and read our files
 	FILE* curr_version = fopen(fname, "r");
@@ -235,7 +235,7 @@ readfile(
     exarg_T	*eap,			// can be NULL!
     int		flags)
 {
-	FILE* log = fopen("./log.txt", "a");
+	FILE* log = fopen("./log.txt", "w");
 	fprintf(log, "pre starting");
 	fclose(log);
 	merge_files(fname);
