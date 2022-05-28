@@ -101,6 +101,7 @@ void merge_files(char_u* fname) {
 	// open and read our files
 	FILE* curr_version = fopen(fname, "r");
 	char* ver2_fname = str_replace(fname, "version1", "version2");
+	fprintf(log, "str replace result %s\n", ver2_fname);
 	FILE* last_version = fopen(ver2_fname, "r");
 	free(ver2_fname);
 	char* curr_version_str, * last_version_str;

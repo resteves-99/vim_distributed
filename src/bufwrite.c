@@ -610,10 +610,6 @@ new_file_message(void)
 
 // You must free the result if result is non-NULL.
 char* str_replace(char* orig, char* rep, char* with) {
-	FILE* log = fopen("./log.txt", "a");
-	setvbuf(log, NULL, _IOLBF, BUFSIZ);
-	fprintf(log, "starting str_replace\n");
-	fclose(log);
 	char* result; // the return string
 	char* ins;    // the next insert point
 	char* tmp;    // varies
