@@ -243,8 +243,8 @@ void merge_files(char_u* fname) {
 		free(other_last_version_str);
 	}
 	fprintf(log, "finished\n");
-	if (strlen(curr_version_str) > 0) free(curr_version_str);
-	if (strlen(last_version_str) > 0) free(last_version_str);
+	// if (strlen(curr_version_str) > 0) free(curr_version_str);
+	// if (strlen(last_version_str) > 0) free(last_version_str);
 	fclose(log);
 	return;
 }
