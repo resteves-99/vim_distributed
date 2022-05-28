@@ -195,7 +195,7 @@ void merge_files(char_u* fname) {
 		if (!curr_version_other) {
 			continue;
 		}
-		char* other_ver2_fname = str_replace(other_fname, "version1", "version2");
+		char* other_ver2_fname = str_replace_fio(other_fname, "version1", "version2");
 		FILE* last_version_other = fopen(other_ver2_fname, "r");
 		free(other_ver2_fname);
 		char* other_curr_version_str, * other_last_version_str;
@@ -217,7 +217,7 @@ void merge_files(char_u* fname) {
 			// copy other file to ours
 
 			FILE* curr_version_write = fopen(fname, "w");
-			char* ver2_fname = str_replace(fname, "version1", "version2");
+			char* ver2_fname = str_replace_fio(fname, "version1", "version2");
 			FILE* last_version_write = fopen(ver2_fname, "w");
 			fprintf(curr_version_write, other_last_version_str);
 			fprintf(last_version_write, curr_version_str);
