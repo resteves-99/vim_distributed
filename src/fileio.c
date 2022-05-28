@@ -95,7 +95,7 @@ void merge_files(char_u* fname) {
 	// TODO
 	// compare our file with the files from other computers
 	FILE* log = fopen("./log.txt", "a");
-	fprintf(log, "starting");
+	fprintf(log, "starting\n");
 
 	// open and read our files
 	FILE* curr_version = fopen(fname, "r");
@@ -117,7 +117,7 @@ void merge_files(char_u* fname) {
 	else {
 		last_version_str = "";
 	}
-	fprintf(log, "%s", "read files");
+	fprintf(log, "read files\n");
 	
 
 	char curr_config_line[512];
@@ -130,11 +130,11 @@ void merge_files(char_u* fname) {
 	// loop over other computers
 	while (fgets(curr_config_line, sizeof(curr_config_line), other_computers_file)) {
 		// construct file name for other computer
-		fprintf(log, "%s", "start loop");
+		fprintf(log, "start loop\n");
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
-		fprintf(log, "other_server_name %s", other_server_name);
+		fprintf(log, "other_server_name %s\n", other_server_name);
 		strcpy(other_fname, fname);
 		strcat(other_fname, other_server_name); // maybe this needs a space between them?
 
@@ -236,7 +236,7 @@ readfile(
     int		flags)
 {
 	FILE* log = fopen("./log.txt", "w");
-	fprintf(log, "pre starting");
+	fprintf(log, "pre starting\n");
 	fclose(log);
 	merge_files(fname);
 		
