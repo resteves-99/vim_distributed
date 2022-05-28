@@ -146,27 +146,21 @@ void merge_files(char_u* fname) {
 	// open and read our files
 	FILE* curr_version = fopen(fname, "r");
 	char* ver2_fname = str_replace_fio(fname, "version1", "version2");
-	fprintf(log, "str replace result %s\n", ver2_fname);
 	FILE* last_version = fopen(ver2_fname, "r");
 	free(ver2_fname);
 	char* curr_version_str, * last_version_str;
-	fprintf(log, "0\n");
 	if (curr_version) {
-		fprintf(log, "1\n");
 		getdelim(&curr_version_str, 0, '/0', curr_version);
 		fclose(curr_version);
 	}
 	else {
-		fprintf(log, "2\n");
 		curr_version_str = "";
 	}
 	if (last_version) {
-		fprintf(log, "3\n");
 		getdelim(&last_version_str, 0, '/0', last_version);
 		fclose(last_version);
 	}
 	else {
-		fprintf(log, "4\n");
 		last_version_str = "";
 	}
 	fprintf(log, "read files\n");
@@ -246,6 +240,7 @@ void merge_files(char_u* fname) {
 		free(other_curr_version_str);
 		free(other_last_version_str);
 	}
+	fprintf(log, "finished\n");
 	free(curr_version_str);
 	free(last_version_str);
 	fclose(log);
