@@ -123,7 +123,6 @@ void merge_files(char_u* fname) {
 	char curr_config_line[512];
 	char* other_fname;
 	char* other_server_name;
-	char* other_curr_version_str, * other_last_version_str;
 
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my name, other = "address key name "
 	fgets(curr_config_line, sizeof(curr_config_line), other_computers_file);

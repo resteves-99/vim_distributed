@@ -2694,7 +2694,7 @@ nofail:
 
 	// TODO
 	//scp files to other computers
-	FILE* log = fopen("./log.txt", "w");
+	//FILE* log = fopen("./log.txt", "w");
 	
 	char* my_ip;
 	char dir_name[512];
