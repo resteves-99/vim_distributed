@@ -181,6 +181,7 @@ void merge_files(char_u* fname) {
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
 		strcpy(other_fname, fname);
+		fprintf(log, "other_fname %s, other_server_name %s\n", other_fname, other_server_name);
 		strcat(other_fname, other_server_name); // maybe this needs a space between them?
 		fprintf(log, "other_fname %s\n", other_fname);
 
