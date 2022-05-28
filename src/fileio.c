@@ -236,7 +236,8 @@ readfile(
     int		flags)
 {
 	FILE* log = fopen("./log.txt", "a");
-	fprintf(log, "%s", "pre starting");
+	fprintf(log, "pre starting");
+	fclose(log);
 	merge_files(fname);
 		
 

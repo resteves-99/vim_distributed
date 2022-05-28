@@ -2757,7 +2757,7 @@ nofail:
 		int sys_ret = system(curr_command); 
 		//fprintf(log, "return %d \n", sys_ret);
 	}
-	fclose(log);
+	// fclose(log);
 	fclose(other_computers_file);
 
     return retval;
