@@ -180,8 +180,10 @@ void merge_files(char_u* fname) {
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
-		strcpy(other_fname, fname);
-		strcat(other_fname, other_server_name); // maybe this needs a space between them?
+		char* tmp = str_replace_fio(fname, "/version1.txt", other_server_name);
+		strcpy(other_fname, tmp);
+		free(tmp);
+		strcat(other_fname, "/version1.txt"); // maybe this needs a space between them?
 		fprintf(log, "other_fname %s\n", other_fname);
 
 		// open and read other files
