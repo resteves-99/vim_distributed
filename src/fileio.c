@@ -201,7 +201,8 @@ void merge_files(char_u* fname) {
 		fprintf(log, "opened files\n");
 		getdelim(&other_curr_version_str, &length, '\0', curr_version_other);
 		fprintf(log, "read file 1 %s \n", other_curr_version_str);
-		getdelim(&other_last_version_str, &length, '\0', last_version_other);
+		size_t bytes_read = getdelim(&other_last_version_str, &length, '\0', last_version_other);
+		if (bytes_read == -1) other_last_version_str = "";
 		fprintf(log, "read file 2 %s \n", other_last_version_str);
 		fclose(curr_version_other);
 		fclose(last_version_other);
