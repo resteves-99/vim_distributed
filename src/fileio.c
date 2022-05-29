@@ -189,16 +189,17 @@ void merge_files(char_u* fname) {
 		// open and read other files
 		FILE* curr_version_other = fopen(other_fname, "r");
 		if (!curr_version_other) {
-			fprintf(log, "skipped\n");
+			fprintf(log, "skipped file\n");
 			continue;
 		}
-		fprintf(log, "didnt skip\n");
 		char* other_ver2_fname = str_replace_fio(other_fname, "version1", "version2");
 		FILE* last_version_other = fopen(other_ver2_fname, "r");
 		free(other_ver2_fname);
 		char* other_curr_version_str, * other_last_version_str;
+		fprintf(log, "opened files\n");
 		getdelim(&other_curr_version_str, 0, '/0', curr_version);
 		getdelim(&other_last_version_str, 0, '/0', last_version);
+		fprintf(log, "read files %s // %s \n", other_curr_version_str, other_last_version_str);
 		fclose(curr_version_other);
 		fclose(last_version_other);
 
