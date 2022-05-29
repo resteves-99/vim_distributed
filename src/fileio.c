@@ -240,10 +240,13 @@ void merge_files(char_u* fname) {
 			last_version = fopen(ver2_fname, "r");
 			free(ver2_fname);
 
-			getdelim(&curr_version_str, 0, '/0', curr_version);
-			getdelim(&last_version_str, 0, '/0', last_version);
+			curr_version_str = NULL;
+			last_version_str = NULL;
+			getdelim(&curr_version_str, &length, '\0', curr_version);
+			getdelim(&last_version_str, &length, '\0', last_version);
 			fclose(curr_version);
 			fclose(last_version);
+			fprintf(log, "new strings %s // %s\n", curr_version_str, other_curr_version_str);
 		}
 		// if we both changed file
 		else {
