@@ -197,7 +197,7 @@ void merge_files(char_u* fname) {
 		free(other_ver2_fname);
 		char* other_curr_version_str = NULL;
 		char* other_last_version_str = NULL;
-		size_t length = 0;
+		size_t length;
 		fprintf(log, "opened files\n");
 		getdelim(&other_curr_version_str, &length, '\0', curr_version);
 		fprintf(log, "read file 1 %s \n", other_curr_version_str);
