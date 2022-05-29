@@ -231,7 +231,7 @@ void merge_files(char_u* fname) {
 			FILE* curr_version_write = fopen(fname, "w");
 			char* ver2_fname = str_replace_fio(fname, "version1", "version2");
 			FILE* last_version_write = fopen(ver2_fname, "w");
-			fprintf(curr_version_write, other_last_version_str);
+			fprintf(curr_version_write, other_curr_version_str);
 			fprintf(last_version_write, curr_version_str);
 			fclose(curr_version_write);
 			fclose(last_version_write);
