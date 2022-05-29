@@ -148,16 +148,20 @@ void merge_files(char_u* fname) {
 	char* ver2_fname = str_replace_fio(fname, "version1", "version2");
 	FILE* last_version = fopen(ver2_fname, "r");
 	free(ver2_fname);
-	char* curr_version_str, * last_version_str;
-	if (curr_version) {
-		getdelim(&curr_version_str, 0, '\0', curr_version);
+	char* curr_version_str = 0;
+	char* last_version_str = 0;
+	size_t length = 0;
+	if (curr_version != NULL) {
+		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_version);
+		if (bytes_read == -1) curr_version_str = "";
 		fclose(curr_version);
 	}
 	else {
 		curr_version_str = "";
 	}
-	if (last_version) {
-		getdelim(&last_version_str, 0, '\0', last_version);
+	if (last_version != NULL) {
+		size_t bytes_read = getdelim(&last_version_str, &length, '\0', last_version);
+		if (bytes_read == -1) last_version_str = "";
 		fclose(last_version);
 	}
 	else {
@@ -198,7 +202,6 @@ void merge_files(char_u* fname) {
 		free(other_ver2_fname);
 		char* other_curr_version_str = NULL;
 		char* other_last_version_str = NULL;
-		size_t length = 0;
 		fprintf(log, "opened files\n");
 		getdelim(&other_curr_version_str, &length, '\0', curr_version_other);
 		fprintf(log, "read othet file 1 %s \n", other_curr_version_str);
