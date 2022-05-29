@@ -204,14 +204,17 @@ void merge_files(char_u* fname) {
 
 		// if both computers have same file
 		if (!strcmp(curr_version_str, other_curr_version_str)) { // strcmp return false if equal
+			fprintf(log, "same file\n");
 			continue;
 		}
 		// if we updated file and other computer hasn't
 		if (!strcmp(last_version_str, other_curr_version_str)) {
+			fprintf(log, "ahead of file\n");
 			continue;
 		}
 		// if other computer updated file and we haven't or if ours is empty and theirs isn't
 		if (!strcmp(curr_version_str, other_last_version_str) || strlen(curr_version_str) == 0 && strlen(other_curr_version_str) > 0) {
+			fprintf(log, "overwrite our file\n");
 			// copy other file to ours
 
 			FILE* curr_version_write = fopen(fname, "w");
@@ -233,6 +236,7 @@ void merge_files(char_u* fname) {
 		}
 		// if we both changed file
 		else {
+			fprintf(log, "conflict\n");
 			// conflict
 			// append other file to ours
 			FILE* curr_version_write = fopen(fname, "a");
