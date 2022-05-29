@@ -217,6 +217,8 @@ void merge_files(char_u* fname) {
 			fprintf(log, "ahead of file\n");
 			continue;
 		}
+		fprintf(log, "check conditions %d // %d\n", strlen(curr_version_str), strlen(other_curr_version_str));
+		
 		// if other computer updated file and we haven't or if ours is empty and theirs isn't
 		if (!strcmp(curr_version_str, other_last_version_str) || strlen(curr_version_str) == 0 && strlen(other_curr_version_str) > 0) {
 			fprintf(log, "overwrite our file\n");
@@ -250,8 +252,8 @@ void merge_files(char_u* fname) {
 			fclose(curr_version_write);
 		}
 
-		free(other_curr_version_str);
-		free(other_last_version_str);
+		/*free(other_curr_version_str);
+		free(other_last_version_str);*/
 	}
 	fprintf(log, "finished\n");
 	// if (strlen(curr_version_str) > 0) free(curr_version_str);
