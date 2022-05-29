@@ -150,14 +150,14 @@ void merge_files(char_u* fname) {
 	free(ver2_fname);
 	char* curr_version_str, * last_version_str;
 	if (curr_version) {
-		getdelim(&curr_version_str, 0, '/0', curr_version);
+		getdelim(&curr_version_str, 0, '\0', curr_version);
 		fclose(curr_version);
 	}
 	else {
 		curr_version_str = "";
 	}
 	if (last_version) {
-		getdelim(&last_version_str, 0, '/0', last_version);
+		getdelim(&last_version_str, 0, '\0', last_version);
 		fclose(last_version);
 	}
 	else {
@@ -198,9 +198,9 @@ void merge_files(char_u* fname) {
 		char* other_curr_version_str = NULL;
 		char* other_last_version_str = NULL;
 		fprintf(log, "opened files\n");
-		getdelim(&other_curr_version_str, 0, '/0', curr_version);
+		getdelim(&other_curr_version_str, 0, '\0', curr_version);
 		fprintf(log, "read file 1 %s \n", other_curr_version_str);
-		getdelim(&other_last_version_str, 0, '/0', last_version);
+		getdelim(&other_last_version_str, 0, '\0', last_version);
 		fprintf(log, "read file 2 %s \n", other_last_version_str);
 		fclose(curr_version_other);
 		fclose(last_version_other);
