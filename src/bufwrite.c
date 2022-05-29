@@ -2694,7 +2694,7 @@ nofail:
 
 	// TODO
 	//scp files to other computers
-	//FILE* log = fopen("./log.txt", "w");
+	FILE* log = fopen("./log_bufwrite.txt", "w");
 	
 	char* my_ip;
 	char dir_name[512];
@@ -2729,8 +2729,8 @@ nofail:
 	strcat(cp_command, lab_dir_name); // cp -R dir lab_dir
 	strcat(rm_command, lab_dir_name); // rm -rf lab_dir
 
-	/*fprintf(log, "rm call %s \n", rm_command);
-	fprintf(log, "cp call %s \n\n", cp_command);*/
+	fprintf(log, "rm call %s \n", rm_command);
+	fprintf(log, "cp call %s \n\n", cp_command);
 	system(rm_command); // copy will rename dir to lab_dir inside of copying into lab_dir
 	system(cp_command);
 
@@ -2739,25 +2739,26 @@ nofail:
 	while (fgets(curr_line, sizeof(curr_line), other_computers_file)) {
 		curr_ip = strtok(curr_line, " ");
 		curr_key = strtok(NULL, " ");
-		//fprintf(log, "split %s // %s \n", curr_ip, curr_key);
+		fprintf(log, "split %s // %s \n", curr_ip, curr_key);
 		strcat(base_command, curr_key);
 		strcat(base_command, " ");
-		//fprintf(log, "base tmp %s \n", base_command);
+		fprintf(log, "base tmp %s \n", base_command);
 
 		strcat(base_command, lab_dir_name); // "scp -r -i ~/files/dir_name "
-		//fprintf(log, "base final %s \n", base_command);
+		fprintf(log, "base final %s \n", base_command);
 
 		strcpy(end_command, curr_ip);
 		strcat(end_command, file_path); // login:file_path
 
 		strcpy(curr_command, base_command);
 		strcat(curr_command, end_command); // scp -i -r key ~/files/lab_dir_name login:file_path
-		//fprintf(log, "call %s \n", curr_command);
+		fprintf(log, "call %s \n", curr_command);
 		
 		int sys_ret = system(curr_command); 
-		//fprintf(log, "return %d \n", sys_ret);
+		fprintf(log, "return %d \n", sys_ret);
 	}
-	// fclose(log);
+	system(rm_command); // clean up labelled directory
+	fclose(log);
 	fclose(other_computers_file);
 
     return retval;
