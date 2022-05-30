@@ -714,6 +714,8 @@ void backup_history_bw(char* fname) {
 
 		curr_version_number--;
 	}
+	FILE* new_file = fopen(fname, 'w');
+	fclose(new_file);
 	fprintf(log, "done\n\n");
 	fclose(log);
 }
