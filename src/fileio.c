@@ -293,6 +293,7 @@ void merge_files(char_u* fname) {
 		char* tmp = str_replace_fio(dname, "/version1.txt", other_server_name);
 		strcpy(other_dname, tmp);
 		free(tmp);
+		fprintf(log, "finished 1st section\n");
 
 		// our most recent file
 		FILE* curr_file = fopen(fname, "r");
@@ -301,6 +302,7 @@ void merge_files(char_u* fname) {
 		size_t bytes_read = getdelim(&curr_fstr, &length, '\0', curr_file); 
 		if (bytes_read == -1) curr_fstr = "";
 		fclose(curr_file);
+		fprintf(log, "finished 2nd section\n");
 
 		// their most recent file
 		char other_curr_fname[256];
