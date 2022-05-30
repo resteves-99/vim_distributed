@@ -302,10 +302,10 @@ void merge_files(char_u* fname) {
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
-		char* tmp = str_replace_fio(dname, "/version1.txt", other_server_name);
+		char* tmp = str_replace_fio(fname, "/version1.txt", other_server_name);
 		strcpy(other_dname, tmp);
 		free(tmp);
-		fprintf(log, "finished 1st section %s \n", other_server_name);
+		fprintf(log, "finished 1st section %s \n");
 
 		// our most recent file
 		FILE* curr_file = fopen(fname, "r");
