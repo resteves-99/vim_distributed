@@ -193,12 +193,12 @@ void backup_history_fio(char* fname) {
 	// working backwards, push each file back by one
 	char* curr_version_str = 0;
 	size_t length = 0;
-	int curr_version = num_files;
-	while (curr_version != 0) {
+	int curr_version_number = num_files;
+	while (curr_version_number != 0) {
 		char* curr_version = "version";
-		char curr_number[4];
-		itoa(curr_version, curr_number, 10);
-		strcat(curr_version, curr_number);
+		char curr_number_str[5]; 
+		snprintf(curr_number_str, 5, "%d", curr_version_number);
+		strcat(curr_version, curr_number_str);
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
 		FILE* curr_file = fopen(curr_file_name, "r");
 		free(curr_file_name);
@@ -207,9 +207,9 @@ void backup_history_fio(char* fname) {
 
 
 		char* updated_version = "version";
-		char next_number[4];
-		itoa(curr_version+1, next_number, 10);
-		strcat(updated_version, next_number);
+		char next_number_str[5];
+		snprintf(next_number_str, 5, "%d", curr_version_number+1);
+		strcat(updated_version, next_number_str);
 		char* update_file_name = str_replace_bw(fname, "version1", updated_version);
 		FILE* updated_file = fopen(update_file_name, "w");
 		free(update_file_name);
