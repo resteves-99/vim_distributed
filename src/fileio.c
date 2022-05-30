@@ -266,7 +266,7 @@ bool check_prefix(char* history_dname, char* prefix_dname) {
 }
 
 void merge_files(char_u* fname) {
-	FILE* log = fopen("./log.txt", "a");
+	FILE* log = fopen("./log.txt", "w");
 	setvbuf(log, NULL, _IOLBF, BUFSIZ);
 	fprintf(log, "starting merge %s\n", fname);
 	
