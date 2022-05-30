@@ -146,6 +146,9 @@ struct directory {
 };
 
 struct directory open_dir(char* dir_name) {
+	FILE* log = fopen("./log_dir.txt", "w");
+	setvbuf(log, NULL, _IOLBF, BUFSIZ);
+
 	DIR* history_d;
 	char* history[100];
 	int his_idx = 0;
@@ -166,8 +169,11 @@ struct directory open_dir(char* dir_name) {
 		}
 		closedir(history_d);
 	}
+
 	all_files.num_files = his_idx;
 	all_files.files = history;
+	fprintf(log, "%s %d \n", dir_name, his_idx);
+	fclose(log);
 	return all_files;
 }
 
