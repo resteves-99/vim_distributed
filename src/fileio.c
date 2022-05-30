@@ -300,8 +300,8 @@ void merge_files(char_u* fname) {
 		strcat(other_curr_fname, "/version1.txt");
 		FILE* other_curr_file = fopen(other_curr_fname, "r");
 		char* other_curr_fstr = NULL;
-		size_t length = 0;
-		size_t bytes_read = getdelim(&other_curr_fstr, &length, '\0', other_curr_file);
+		length = 0;
+		bytes_read = getdelim(&other_curr_fstr, &length, '\0', other_curr_file);
 		if (bytes_read == -1) other_curr_fstr = "";
 		fclose(other_curr_file);
 
