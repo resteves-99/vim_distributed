@@ -274,6 +274,7 @@ void merge_files(char_u* fname) {
 	char* dname;
 	strcpy(dname, fname);
 	dname[dname_size] = '\0';
+	fprintf(log, "dname %s\n", dname);
 	char curr_config_line[512];
 	char other_dname[512];
 	char* other_server_name;
