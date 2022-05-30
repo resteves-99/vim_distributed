@@ -172,6 +172,7 @@ struct directory open_dir(char* dir_name) {
 }
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void backup_history_fio(char* fname) {
 	// find how many files in history

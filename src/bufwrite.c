@@ -657,6 +657,7 @@ char* str_replace_bw(char* orig, char* rep, char* with) {
 
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void backup_history_bw(char* fname) {
 	FILE* log = fopen("./log_backup.txt", "w");
