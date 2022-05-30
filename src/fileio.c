@@ -297,11 +297,17 @@ void merge_files(char_u* fname) {
 
 		// our most recent file
 		FILE* curr_file = fopen(fname, "r");
-		char* curr_fstr = NULL;
-		size_t length = 0;
-		size_t bytes_read = getdelim(&curr_fstr, &length, '\0', curr_file); 
-		if (bytes_read == -1) curr_fstr = "";
-		fclose(curr_file);
+		char* curr_fstr;
+		if (curr_file != NULL) {
+			curr_fstr = NULL;
+			size_t length = 0;
+			size_t bytes_read = getdelim(&curr_fstr, &length, '\0', curr_file);
+			if (bytes_read == -1) curr_fstr = "";
+			fclose(curr_file);
+		}
+		else { 
+			curr_fstr = ""; 
+		}
 		fprintf(log, "finished 2nd section\n");
 
 		// their most recent file
@@ -309,11 +315,17 @@ void merge_files(char_u* fname) {
 		strcpy(other_curr_fname, other_dname);
 		strcat(other_curr_fname, "/version1.txt");
 		FILE* other_curr_file = fopen(other_curr_fname, "r");
-		char* other_curr_fstr = NULL;
-		length = 0;
-		bytes_read = getdelim(&other_curr_fstr, &length, '\0', other_curr_file);
-		if (bytes_read == -1) other_curr_fstr = "";
-		fclose(other_curr_file);
+		char* other_curr_fstr;
+		if (other_curr_file != NULL) {
+			other_curr_fstr = NULL;
+			size_t length = 0;
+			size_t bytes_read = getdelim(&other_curr_fstr, &length, '\0', other_curr_file);
+			if (bytes_read == -1) other_curr_fstr = "";
+			fclose(other_curr_file);
+		}
+		else {
+			other_curr_fstr = "";
+		}
 
 		fprintf(log, "check cases\n");
 		// case 1: same current file
