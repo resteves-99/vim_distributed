@@ -284,6 +284,7 @@ void merge_files(char_u* fname) {
 
 	// loop for every other computer
 	while (fgets(curr_config_line, sizeof(curr_config_line), other_computers_file)) {
+		fprintf(log, "start of loop\n");
 		// get other dir name
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
@@ -311,6 +312,7 @@ void merge_files(char_u* fname) {
 		if (bytes_read == -1) other_curr_fstr = "";
 		fclose(other_curr_file);
 
+		fprintf(log, "check cases\n");
 		// case 1: same current file
 		if (!strcmp(curr_fstr, other_curr_fstr)) {
 			// do nothing
