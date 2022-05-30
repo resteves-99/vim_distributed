@@ -136,137 +136,364 @@ char* str_replace_fio(char* orig, char* rep, char* with) {
 	return result;
 }
 
+#include <stdbool.h>
+#include <dirent.h> 
+#include <stdio.h> 
+
+struct directory {
+	int num_files;
+	char** files;
+};
+
+struct directory open_dir(char* dir_name) {
+	DIR* history_d;
+	char* history[100];
+	int his_idx = 0;
+	struct directory all_files;
+	all_files.num_files = 0;
+	all_files.files = NULL;
+	struct dirent* dir_ent;
+	history_d = opendir(dir_name);
+	if (history_d) {
+		while ((dir_ent = readdir(history_d)) != NULL) {
+			FILE* curr_file = dir_ent->d_name;
+			char* curr_file_str = NULL;
+			size_t length = 0;
+			getdelim(&curr_file_str, &length, '\0', curr_file);
+			history[his_idx] = curr_file_str;
+			his_idx++;
+
+		}
+		closedir(history_d);
+	}
+	all_files.num_files = his_idx;
+	all_files.files = history;
+	return all_files;
+}
+
+void backup_history_fio(char* fname) {
+	// find how many files in history
+	int num_files = 0;
+	while (1 == 1) {
+		char* curr_version = "version";
+		strcat(curr_version, str(num_files + 1));
+		char* curr_file = str_replace_bw(fname, "version1", curr_version);
+		if (access(fname, F_OK) == 0) {
+			free(curr_file);
+			num_files++;
+		}
+		else {
+			free(curr_file);
+			break;
+		}
+	}
+
+	// working backwards, push each file back by one
+	char* curr_version_str = 0;
+	size_t length = 0;
+	int curr_version = num_files;
+	while (curr_version != 0) {
+		char* curr_version = "version";
+		strcat(curr_version, str(curr_version));
+		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
+		FILE* curr_file = fopen(curr_file_name, "r");
+		free(curr_file_name);
+
+		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_file);
+
+
+		char* updated_version = "version";
+		strcat(updated_version, str(curr_version + 1));
+		char* update_file_name = str_replace_bw(fname, "version1", curr_version);
+		FILE* updated_file = fopen(update_file_name, "w");
+		free(update_file_name);
+
+		fprintf(updated_file, curr_version_str);
+		fclose(updated_file);
+
+		curr_version--;
+	}
+}
+
+bool check_prefix(char* history_dname, char* prefix_dname) {
+	// A prefix of a history is a history that 
+	// contains some of the nodes in the original history
+	// and no node not in the original history
+	// (allows for prefixes to skip some iterations)
+
+	// get list of files in directories
+	struct directory history_struct = open_dir(history_dname);
+	int history_len = history_struct.num_files;
+	char** history = history_struct.files;
+	int his_idx = history_len;
+
+	struct directory prefix_struct = open_dir(prefix_dname);
+	int prefix_len = prefix_struct.num_files;
+	char** prefix = prefix_struct.files;
+	int pre_idx = prefix_len;
+
+	// start at back of history and prefix
+	while (his_idx >= 0 || pre_idx >= 0) {
+		char* curr_his_file = history[his_idx];
+		char* curr_pre_file = prefix[pre_idx];
+		if (!strcmp(curr_his_file, curr_pre_file)) { // strcmp return false if equal
+			// if files are the same
+			// increment both
+			his_idx--;
+			pre_idx--;
+		}
+		else {
+			//increment history
+			his_idx--;
+		}
+
+		if (his_idx == 0 & pre_idx == 0) {
+			return true;
+		}
+		if (his_idx == 0) {
+			return false;
+		}
+		if (pre_idx == 0) {
+			return true;
+		}
+	}
+}
+
 void merge_files(char_u* fname) {
-	// TODO
-	// compare our file with the files from other computers
 	FILE* log = fopen("./log.txt", "a");
 	setvbuf(log, NULL, _IOLBF, BUFSIZ);
-	fprintf(log, "starting %s\n", fname);
-
-	// open and read our files
-	FILE* curr_version = fopen(fname, "r");
-	char* ver2_fname = str_replace_fio(fname, "version1", "version2");
-	FILE* last_version = fopen(ver2_fname, "r");
-	free(ver2_fname);
-	char* curr_version_str = 0;
-	char* last_version_str = 0;
-	size_t length = 0;
-	if (curr_version != NULL) {
-		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_version);
-		if (bytes_read == -1) curr_version_str = "";
-		fclose(curr_version);
-	}
-	else {
-		curr_version_str = "";
-	}
-	if (last_version != NULL) {
-		size_t bytes_read = getdelim(&last_version_str, &length, '\0', last_version);
-		if (bytes_read == -1) last_version_str = "";
-		fclose(last_version);
-	}
-	else {
-		last_version_str = "";
-	}
-	fprintf(log, "read file 1 %s \n", curr_version_str);
-	fprintf(log, "read file 2 %s \n", last_version_str);
+	fprintf(log, "starting merge %s\n", fname);
 	
-
+	int dname_size = strlen(fname) - 13;
+	char* dname;
+	strcpy(dname, fname);
+	dname[dname_size] = '\0';
 	char curr_config_line[512];
-	char other_fname[512];
+	char other_dname[512];
 	char* other_server_name;
 
+	// skip first line of file
 	FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my name, other = "address key name "
 	fgets(curr_config_line, sizeof(curr_config_line), other_computers_file);
 
-	// loop over other computers
+	// loop for every other computer
 	while (fgets(curr_config_line, sizeof(curr_config_line), other_computers_file)) {
-		// construct file name for other computer
-		fprintf(log, "start loop\n");
+		// get other dir name
 		strtok(curr_config_line, " ");
 		strtok(NULL, " ");
 		other_server_name = strtok(NULL, " ");
-		char* tmp = str_replace_fio(fname, "/version1.txt", other_server_name);
-		strcpy(other_fname, tmp);
+		char* tmp = str_replace_fio(dname, "/version1.txt", other_server_name);
+		strcpy(other_dname, tmp);
 		free(tmp);
-		strcat(other_fname, "/version1.txt"); // maybe this needs a space between them?
-		fprintf(log, "other_fname %s\n", other_fname);
 
-		// open and read other files
-		FILE* curr_version_other = fopen(other_fname, "r");
-		if (!curr_version_other) {
-			fprintf(log, "skipped file\n");
+		// our most recent file
+		FILE* curr_file = fopen(fname, "r");
+		char* curr_fstr = NULL;
+		size_t length = 0;
+		size_t bytes_read = getdelim(&curr_fstr, &length, '\0', curr_file); 
+		if (bytes_read == -1) curr_fstr = "";
+		fclose(curr_file);
+
+		// their most recent file
+		char* other_curr_fname;
+		strcpy(other_curr_fname, other_dname);
+		strcat(other_curr_fname, "/version1.txt");
+		FILE* other_curr_file = fopen(other_curr_fname, "r");
+		char* other_curr_fstr = NULL;
+		size_t length = 0;
+		size_t bytes_read = getdelim(&other_curr_fstr, &length, '\0', other_curr_file);
+		if (bytes_read == -1) other_curr_fstr = "";
+		fclose(other_curr_file);
+
+		// case 1: same current file
+		if (!strcmp(curr_fstr, other_curr_fstr)) {
+			// do nothing
+			fprintf(log, "same current file\n");
 			continue;
 		}
-		char* other_ver2_fname = str_replace_fio(other_fname, "version1", "version2");
-		FILE* last_version_other = fopen(other_ver2_fname, "r");
-		free(other_ver2_fname);
-		char* other_curr_version_str = NULL;
-		char* other_last_version_str = NULL;
-		fprintf(log, "opened files\n");
-		getdelim(&other_curr_version_str, &length, '\0', curr_version_other);
-		fprintf(log, "read othet file 1 %s \n", other_curr_version_str);
-		size_t bytes_read = getdelim(&other_last_version_str, &length, '\0', last_version_other);
-		if (bytes_read == -1) other_last_version_str = "";
-		fprintf(log, "read other file 2 %s \n", other_last_version_str);
-		fclose(curr_version_other);
-		fclose(last_version_other);
+		// case 2: our file is prefix of other file
+		if (check_prefix(other_dname, dname)) {
+			// copy their history to ours
+			fprintf(log, "our file prefix \n");
 
-		// if both computers have same file
-		if (!strcmp(curr_version_str, other_curr_version_str)) { // strcmp return false if equal
-			fprintf(log, "same file\n");
+			char* rm_command = "rm -rf "; 
+			strcat(rm_command, dname);
+			system(rm_command);
+
+			char* cp_command = "cp -R ";
+			strcat(cp_command, other_dname); 
+			strcat(cp_command, " "); // "cp -R dir "
+			strcat(cp_command, dname); // cp -R dir lab_dir
+			system(cp_command);
+
+			fprintf(log, "rm call %s \n", rm_command);
+			fprintf(log, "cp call %s \n", cp_command);
+		}
+		// case 3: their file is prefix of our file 
+		if (check_prefix(dname, other_dname)) {
+			// do nothing
+			fprintf(log, "case 3: their file prefix \n");
 			continue;
 		}
-		// if we updated file and other computer hasn't
-		if (!strcmp(last_version_str, other_curr_version_str)) {
-			fprintf(log, "ahead of file\n");
-			continue;
-		}
-		fprintf(log, "check conditions %d // %d\n", strlen(curr_version_str), strlen(other_curr_version_str));
-		
-		// if other computer updated file and we haven't or if ours is empty and theirs isn't
-		if (!strcmp(curr_version_str, other_last_version_str) || strlen(curr_version_str) == 0 && strlen(other_curr_version_str) > 0) {
-			fprintf(log, "overwrite our file\n");
-			// copy other file to ours
-
-			FILE* curr_version_write = fopen(fname, "w");
-			char* ver2_fname = str_replace_fio(fname, "version1", "version2");
-			FILE* last_version_write = fopen(ver2_fname, "w");
-			fprintf(curr_version_write, other_curr_version_str);
-			fprintf(last_version_write, curr_version_str);
-			fclose(curr_version_write);
-			fclose(last_version_write);
-
-			curr_version = fopen(fname, "r");
-			last_version = fopen(ver2_fname, "r");
-			free(ver2_fname);
-
-			curr_version_str = NULL;
-			last_version_str = NULL;
-			getdelim(&curr_version_str, &length, '\0', curr_version);
-			getdelim(&last_version_str, &length, '\0', last_version);
-			fclose(curr_version);
-			fclose(last_version);
-			fprintf(log, "new strings %s // %s\n", curr_version_str, other_curr_version_str);
-		}
-		// if we both changed file
+		// case 4: none of the above
 		else {
-			fprintf(log, "conflict\n");
 			// conflict
-			// append other file to ours
-			FILE* curr_version_write = fopen(fname, "a");
-			fprintf(curr_version_write, "=====CONFLICT=====\n");
-			fprintf(curr_version_write, other_last_version_str);
-			fclose(curr_version_write);
+			fprintf(log, "case 4: confict \n");
+			
+			// push history back
+			backup_history_fio(fname);
+			// combine files in new version 1
+			char new_fstr[5000];
+			strcpy(new_fstr, curr_fstr);
+			strcat(new_fstr, "====CONFLICT====\n");
+			strcat(new_fstr, other_curr_fstr);
+			// push to new file
+			FILE* new_file = fopen(fname, "w");
+			fprintf(new_file, new_fstr);
+			fclose(new_file);
 		}
-
-		/*free(other_curr_version_str);
-		free(other_last_version_str);*/
 	}
-	fprintf(log, "finished\n");
+	
+	fprintf(log, "finished");
+	fclose(log);
+	fclose(other_computers_file);
+	return;
+
+
+
+
+	// TODO
+	// compare our file with the files from other computers
+	//FILE* log = fopen("./log.txt", "a");
+	//setvbuf(log, NULL, _IOLBF, BUFSIZ);
+	//fprintf(log, "starting %s\n", fname);
+
+	// open and read our files
+	//FILE* curr_version = fopen(fname, "r");
+	//char* ver2_fname = str_replace_fio(fname, "version1", "version2");
+	//FILE* last_version = fopen(ver2_fname, "r");
+	//free(ver2_fname);
+	//char* curr_version_str = 0;
+	//char* last_version_str = 0;
+	//size_t length = 0;
+	//if (curr_version != NULL) {
+	//	size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_version);
+	//	if (bytes_read == -1) curr_version_str = "";
+	//	fclose(curr_version);
+	//}
+	//else {
+	//	curr_version_str = "";
+	//}
+	//if (last_version != NULL) {
+	//	size_t bytes_read = getdelim(&last_version_str, &length, '\0', last_version);
+	//	if (bytes_read == -1) last_version_str = "";
+	//	fclose(last_version);
+	//}
+	//else {
+	//	last_version_str = "";
+	//}
+	//fprintf(log, "read file 1 %s \n", curr_version_str);
+	//fprintf(log, "read file 2 %s \n", last_version_str);
+	//
+
+	//char curr_config_line[512];
+	//char other_fname[512];
+	//char* other_server_name;
+
+	//FILE* other_computers_file = fopen("./distributed_config.txt", "r"); //first line = my name, other = "address key name "
+	//fgets(curr_config_line, sizeof(curr_config_line), other_computers_file);
+
+	// loop over other computers
+	//while (fgets(curr_config_line, sizeof(curr_config_line), other_computers_file)) {
+	//	 construct file name for other computer
+	//	fprintf(log, "start loop\n");
+	//	strtok(curr_config_line, " ");
+	//	strtok(NULL, " ");
+	//	other_server_name = strtok(NULL, " ");
+	//	char* tmp = str_replace_fio(fname, "/version1.txt", other_server_name);
+	//	strcpy(other_fname, tmp);
+	//	free(tmp);
+	//	strcat(other_fname, "/version1.txt"); // maybe this needs a space between them?
+	//	fprintf(log, "other_fname %s\n", other_fname);
+
+	//	 TODO redo case checks
+
+	//	 open and read other files
+	//	FILE* curr_version_other = fopen(other_fname, "r");
+	//	if (!curr_version_other) {
+	//		fprintf(log, "skipped file\n");
+	//		continue;
+	//	}
+	//	char* other_ver2_fname = str_replace_fio(other_fname, "version1", "version2");
+	//	FILE* last_version_other = fopen(other_ver2_fname, "r");
+	//	free(other_ver2_fname);
+	//	char* other_curr_version_str = NULL;
+	//	char* other_last_version_str = NULL;
+	//	fprintf(log, "opened files\n");
+	//	getdelim(&other_curr_version_str, &length, '\0', curr_version_other);
+	//	fprintf(log, "read othet file 1 %s \n", other_curr_version_str);
+	//	size_t bytes_read = getdelim(&other_last_version_str, &length, '\0', last_version_other);
+	//	if (bytes_read == -1) other_last_version_str = "";
+	//	fprintf(log, "read other file 2 %s \n", other_last_version_str);
+	//	fclose(curr_version_other);
+	//	fclose(last_version_other);
+
+	//	 if both computers have same file
+	//	if (!strcmp(curr_version_str, other_curr_version_str)) { // strcmp return false if equal
+	//		fprintf(log, "same file\n");
+	//		continue;
+	//	}
+	//	 if we updated file and other computer hasn't
+	//	if (!strcmp(last_version_str, other_curr_version_str)) {
+	//		fprintf(log, "ahead of file\n");
+	//		continue;
+	//	}
+	//	fprintf(log, "check conditions %d // %d\n", strlen(curr_version_str), strlen(other_curr_version_str));
+	//	
+	//	 if other computer updated file and we haven't or if ours is empty and theirs isn't
+	//	if (!strcmp(curr_version_str, other_last_version_str) || strlen(curr_version_str) == 0 && strlen(other_curr_version_str) > 0) {
+	//		fprintf(log, "overwrite our file\n");
+	//		 copy other file to ours
+
+	//		FILE* curr_version_write = fopen(fname, "w");
+	//		char* ver2_fname = str_replace_fio(fname, "version1", "version2");
+	//		FILE* last_version_write = fopen(ver2_fname, "w");
+	//		fprintf(curr_version_write, other_curr_version_str);
+	//		fprintf(last_version_write, curr_version_str);
+	//		fclose(curr_version_write);
+	//		fclose(last_version_write);
+
+	//		curr_version = fopen(fname, "r");
+	//		last_version = fopen(ver2_fname, "r");
+	//		free(ver2_fname);
+
+	//		curr_version_str = NULL;
+	//		last_version_str = NULL;
+	//		getdelim(&curr_version_str, &length, '\0', curr_version);
+	//		getdelim(&last_version_str, &length, '\0', last_version);
+	//		fclose(curr_version);
+	//		fclose(last_version);
+	//		fprintf(log, "new strings %s // %s\n", curr_version_str, other_curr_version_str);
+	//	}
+	//	 if we both changed file
+	//	else {
+	//		fprintf(log, "conflict\n");
+	//		 conflict
+	//		 append other file to ours
+	//		FILE* curr_version_write = fopen(fname, "a");
+	//		fprintf(curr_version_write, "=====CONFLICT=====\n");
+	//		fprintf(curr_version_write, other_last_version_str);
+	//		fclose(curr_version_write);
+	//	}
+
+	//	/*free(other_curr_version_str);
+	//	free(other_last_version_str);*/
+	//}
+	//fprintf(log, "finished\n");
 	// if (strlen(curr_version_str) > 0) free(curr_version_str);
 	// if (strlen(last_version_str) > 0) free(last_version_str);
-	fclose(log);
-	return;
+	//fclose(log);
+	//return;
 }
 
 /*
@@ -304,9 +531,6 @@ readfile(
     exarg_T	*eap,			// can be NULL!
     int		flags)
 {
-	FILE* log = fopen("./log.txt", "w");
-	fprintf(log, "pre starting\n");
-	fclose(log);
 	merge_files(fname);
 		
 

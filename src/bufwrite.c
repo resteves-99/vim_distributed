@@ -655,6 +655,51 @@ char* str_replace_bw(char* orig, char* rep, char* with) {
 	return result;
 }
 
+void backup_history_bw(char* fname) {
+	// find how many files in history
+	int num_files = 0;
+	while (1 == 1) {
+		char* curr_version = "version";
+		strcat(curr_version, str(num_files+1));
+		char* curr_file = str_replace_bw(fname, "version1", curr_version);
+		if (access(fname, F_OK) == 0) {
+			free(curr_file);
+			num_files++;
+		}
+		else {
+			free(curr_file);
+			break;
+		}
+	}
+
+	// working backwards, push each file back by one
+	char* curr_version_str = 0;
+	size_t length = 0;
+	int curr_version = num_files;
+	while (curr_version != 0) {
+		char* curr_version = "version";
+		strcat(curr_version, str(curr_version));
+		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
+		FILE* curr_file = fopen(curr_file_name, "r");
+		free(curr_file_name);
+
+		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_file);
+		fclose(curr_file);
+
+
+		char* updated_version = "version";
+		strcat(updated_version, str(curr_version+1));
+		char* update_file_name = str_replace_bw(fname, "version1", curr_version);
+		FILE* updated_file = fopen(update_file_name, "w");
+		free(update_file_name);
+
+		fprintf(updated_file, curr_version_str);
+		fclose(updated_file);
+
+		curr_version--;
+	}
+}
+
 /*
  * buf_write() - write to file "fname" lines "start" through "end"
  *
@@ -684,27 +729,9 @@ buf_write(
     int		    forceit,
     int		    reset_changed,
     int		    filtering)
-{
-	// TODO
-	/*FILE* distr_file = str_replace(fname, "files", "distributed_files");*/
-	FILE* source = fopen(fname, "r");
-	char* ver2_fname = str_replace_bw(fname, "version1", "version2");
-	FILE* destination = fopen(ver2_fname, "w");
-	free(ver2_fname);
-
-	// transfer ver2_file_read from version 1 to version 2
-	char character;
-	if (source != NULL) {
-		character = fgetc(source);
-		while (character != EOF)
-		{
-			fputc(character, destination);
-			character = fgetc(source);
-		}
-		fclose(source);
-	}
-	fclose(destination);
-	// sync data at end of function
+{	
+	backup_history_bw(fname);
+	
 	
 
     int		    fd;
