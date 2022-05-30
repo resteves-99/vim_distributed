@@ -271,7 +271,7 @@ void merge_files(char_u* fname) {
 	fprintf(log, "starting merge %s\n", fname);
 	
 	int dname_size = strlen(fname) - 13;
-	char* dname;
+	char dname[256];
 	strcpy(dname, fname);
 	dname[dname_size] = '\0';
 	fprintf(log, "dname %s\n", dname);
@@ -303,7 +303,7 @@ void merge_files(char_u* fname) {
 		fclose(curr_file);
 
 		// their most recent file
-		char* other_curr_fname;
+		char other_curr_fname[256];
 		strcpy(other_curr_fname, other_dname);
 		strcat(other_curr_fname, "/version1.txt");
 		FILE* other_curr_file = fopen(other_curr_fname, "r");
