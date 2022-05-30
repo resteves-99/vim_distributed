@@ -660,7 +660,9 @@ void backup_history_bw(char* fname) {
 	int num_files = 0;
 	while (1 == 1) {
 		char* curr_version = "version";
-		strcat(curr_version, str(num_files+1));
+		char curr_number[4];
+		itoa(num_files + 1, curr_number, 10);
+		strcat(curr_version, curr_number);
 		char* curr_file = str_replace_bw(fname, "version1", curr_version);
 		if (access(fname, F_OK) == 0) {
 			free(curr_file);
@@ -678,18 +680,21 @@ void backup_history_bw(char* fname) {
 	int curr_version = num_files;
 	while (curr_version != 0) {
 		char* curr_version = "version";
-		strcat(curr_version, str(curr_version));
+		char curr_number[4];
+		itoa(curr_version, curr_number, 10);
+		strcat(curr_version, curr_number);
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
 		FILE* curr_file = fopen(curr_file_name, "r");
 		free(curr_file_name);
 
 		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_file);
-		fclose(curr_file);
 
 
 		char* updated_version = "version";
-		strcat(updated_version, str(curr_version+1));
-		char* update_file_name = str_replace_bw(fname, "version1", curr_version);
+		char next_number[4];
+		itoa(curr_version + 1, next_number, 10);
+		strcat(updated_version, next_number);
+		char* update_file_name = str_replace_bw(fname, "version1", updated_version);
 		FILE* updated_file = fopen(update_file_name, "w");
 		free(update_file_name);
 
