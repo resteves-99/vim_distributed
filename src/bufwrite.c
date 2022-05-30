@@ -667,10 +667,8 @@ void backup_history_bw(char* fname) {
 	// find how many files in history
 	int num_files = 0;
 	while (1 == 1) {
-		char* curr_version = "version";
-		char curr_number_str[5];
-		snprintf(curr_number_str, 5, "%d", num_files+1);
-		strcat(curr_version, curr_number_str);
+		char curr_version[12];
+		snprintf(curr_version, 12, "version%d", num_files+1);
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
 		fprintf(log, "curr file %s\n", curr_file_name);
 		FILE* curr_file = fopen(curr_file_name, "r");
@@ -694,10 +692,8 @@ void backup_history_bw(char* fname) {
 	while (curr_version_number != 0) {
 		fprintf(log, "push back number %d\n", curr_version_number);
 
-		char* curr_version = "version";
-		char curr_number_str[5];
-		snprintf(curr_number_str, 5, "%d", curr_version_number);
-		strcat(curr_version, curr_number_str);
+		char curr_version[12];
+		snprintf(curr_version, 12, "version%d", curr_version_number);
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
 		FILE* curr_file = fopen(curr_file_name, "r");
 		free(curr_file_name);
@@ -706,10 +702,9 @@ void backup_history_bw(char* fname) {
 		fprintf(log, "read file\n");
 
 
-		char* updated_version = "version";
-		char next_number_str[5];
-		snprintf(next_number_str, 5, "%d", curr_version_number + 1);
-		strcat(updated_version, next_number_str);
+
+		char updated_version[12];
+		snprintf(updated_version, 12, "version%d", curr_version_number+1);
 		char* update_file_name = str_replace_bw(fname, "version1", updated_version);
 		FILE* updated_file = fopen(update_file_name, "w");
 		free(update_file_name);
@@ -718,7 +713,7 @@ void backup_history_bw(char* fname) {
 		fclose(updated_file);
 		fprintf(log, "push file\n");
 
-		curr_version--;
+		curr_version_number--;
 	}
 	fprintf(log, "done\n\n");
 	fclose(log);
