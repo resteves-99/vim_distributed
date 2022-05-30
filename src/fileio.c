@@ -175,20 +175,26 @@ struct directory open_dir(char* dir_name) {
 #include <stdlib.h>
 
 void backup_history_fio(char* fname) {
+	FILE* log = fopen("./log_backup_fio.txt", "w");
+	setvbuf(log, NULL, _IOLBF, BUFSIZ);
+	fprintf(log, "starting backup %s \n", fname);
+
 	// find how many files in history
 	int num_files = 0;
 	while (1 == 1) {
-		char* curr_version = "version";
-		char curr_number_str[5];
-		snprintf(curr_number_str, 5, "%d", num_files + 1);
-		strcat(curr_version, curr_number_str);
-		char* curr_file = str_replace_bw(fname, "version1", curr_version);
-		if (access(fname, F_OK) == 0) {
-			free(curr_file);
+		char curr_version[12];
+		snprintf(curr_version, 12, "version%d", num_files + 1);
+		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
+		fprintf(log, "curr file %s\n", curr_file_name);
+		FILE* curr_file = fopen(curr_file_name, "r");
+		free(curr_file_name);
+		if (curr_file != NULL) {
+			fprintf(log, "more files\n");
+			fclose(curr_file);
 			num_files++;
 		}
 		else {
-			free(curr_file);
+			fprintf(log, "no more files\n");
 			break;
 		}
 	}
@@ -198,30 +204,33 @@ void backup_history_fio(char* fname) {
 	size_t length = 0;
 	int curr_version_number = num_files;
 	while (curr_version_number != 0) {
-		char* curr_version = "version";
-		char curr_number_str[5]; 
-		snprintf(curr_number_str, 5, "%d", curr_version_number);
-		strcat(curr_version, curr_number_str);
+		fprintf(log, "push back number %d\n", curr_version_number);
+
+		char curr_version[12];
+		snprintf(curr_version, 12, "version%d", curr_version_number);
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
 		FILE* curr_file = fopen(curr_file_name, "r");
 		free(curr_file_name);
 
 		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_file);
+		fprintf(log, "read file\n");
 
 
-		char* updated_version = "version";
-		char next_number_str[5];
-		snprintf(next_number_str, 5, "%d", curr_version_number+1);
-		strcat(updated_version, next_number_str);
+
+		char updated_version[12];
+		snprintf(updated_version, 12, "version%d", curr_version_number + 1);
 		char* update_file_name = str_replace_bw(fname, "version1", updated_version);
 		FILE* updated_file = fopen(update_file_name, "w");
 		free(update_file_name);
 
 		fprintf(updated_file, curr_version_str);
 		fclose(updated_file);
+		fprintf(log, "push file\n");
 
-		curr_version--;
+		curr_version_number--;
 	}
+	fprintf(log, "done\n\n");
+	fclose(log);
 }
 
 bool check_prefix(char* history_dname, char* prefix_dname) {
@@ -311,7 +320,7 @@ void merge_files(char_u* fname) {
 		else { 
 			curr_fstr = ""; 
 		}
-		fprintf(log, "finished 2nd section\n");
+		fprintf(log, "finished 2nd section %s \n", curr_fstr);
 
 		// their most recent file
 		char other_curr_fname[256];
@@ -328,6 +337,8 @@ void merge_files(char_u* fname) {
 		}
 		else {
 			other_curr_fstr = "";
+			fprintf(log, "other history does not exist \n");
+			continue;
 		}
 
 		fprintf(log, "check cases\n");
