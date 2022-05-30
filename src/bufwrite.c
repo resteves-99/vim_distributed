@@ -668,6 +668,7 @@ void backup_history_bw(char* fname) {
 		snprintf(curr_number_str, 5, "%d", num_files+1);
 		strcat(curr_version, curr_number_str);
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
+		fprintf(log, "curr file %s\n", curr_file_name);
 		FILE* curr_file = fopen(curr_file_name, "r");
 		if (curr_file != NULL) {
 			fprintf(log, "more files\n");
