@@ -672,15 +672,14 @@ void backup_history_bw(char* fname) {
 		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
 		fprintf(log, "curr file %s\n", curr_file_name);
 		FILE* curr_file = fopen(curr_file_name, "r");
+		free(curr_file_name);
 		if (curr_file != NULL) {
 			fprintf(log, "more files\n");
-			free(curr_file);
 			fclose(curr_file);
 			num_files++;
 		}
 		else {
 			fprintf(log, "no more files\n");
-			free(curr_file);
 			break;
 		}
 	}
