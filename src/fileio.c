@@ -327,6 +327,7 @@ void merge_files(char_u* fname) {
 		strcpy(other_curr_fname, other_dname);
 		strcat(other_curr_fname, "/version1.txt");
 		FILE* other_curr_file = fopen(other_curr_fname, "r");
+		fprintf(log, "other file name %s \n", other_curr_fname);
 		char* other_curr_fstr;
 		if (other_curr_file != NULL) {
 			other_curr_fstr = NULL;
@@ -391,7 +392,7 @@ void merge_files(char_u* fname) {
 		}
 	}
 	
-	fprintf(log, "finished");
+	fprintf(log, "finished\n");
 	fclose(log);
 	fclose(other_computers_file);
 	return;
