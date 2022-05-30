@@ -176,9 +176,9 @@ void backup_history_fio(char* fname) {
 	int num_files = 0;
 	while (1 == 1) {
 		char* curr_version = "version";
-		char curr_number[4];
-		itoa(num_files+1, curr_number, 10);
-		strcat(curr_version, curr_number);
+		char curr_number_str[5];
+		snprintf(curr_number_str, 5, "%d", num_files + 1);
+		strcat(curr_version, curr_number_str);
 		char* curr_file = str_replace_bw(fname, "version1", curr_version);
 		if (access(fname, F_OK) == 0) {
 			free(curr_file);
