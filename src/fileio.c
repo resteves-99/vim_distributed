@@ -311,7 +311,7 @@ void merge_files(char_u* fname) {
 		char* tmp = str_replace_fio(fname, "/version1.txt", other_server_name);
 		strcpy(other_dname, tmp);
 		free(tmp);
-		fprintf(log, "finished 1st section %s \n");
+		fprintf(log, "finished 1st section \n");
 
 		// our most recent file
 		FILE* curr_file = fopen(fname, "r");
