@@ -2803,6 +2803,7 @@ nofail:
 		fprintf(log, "return %d \n", sys_ret);
 	}
 	system(rm_command); // clean up labelled directory
+	fprintf(log, "finished \n\n");
 	fclose(log);
 	fclose(other_computers_file);
 
