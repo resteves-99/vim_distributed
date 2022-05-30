@@ -656,6 +656,10 @@ char* str_replace_bw(char* orig, char* rep, char* with) {
 }
 
 void backup_history_bw(char* fname) {
+	FILE* log = fopen("./log_backup.txt", "w");
+	setvbuf(log, NULL, _IOLBF, BUFSIZ);
+	fprintf(log, "starting backup %s\n", fname);
+
 	// find how many files in history
 	int num_files = 0;
 	while (1 == 1) {
@@ -665,10 +669,12 @@ void backup_history_bw(char* fname) {
 		strcat(curr_version, curr_number_str);
 		char* curr_file = str_replace_bw(fname, "version1", curr_version);
 		if (access(fname, F_OK) == 0) {
+			fprintf(log, "more files\n");
 			free(curr_file);
 			num_files++;
 		}
 		else {
+			fprintf(log, "no more files\n");
 			free(curr_file);
 			break;
 		}
@@ -679,6 +685,8 @@ void backup_history_bw(char* fname) {
 	size_t length = 0;
 	int curr_version_number = num_files;
 	while (curr_version_number != 0) {
+		fprintf(log, "push back number %d\n", curr_version_number);
+
 		char* curr_version = "version";
 		char curr_number_str[5];
 		snprintf(curr_number_str, 5, "%d", curr_version_number);
@@ -688,6 +696,7 @@ void backup_history_bw(char* fname) {
 		free(curr_file_name);
 
 		size_t bytes_read = getdelim(&curr_version_str, &length, '\0', curr_file);
+		fprintf(log, "read file\n");
 
 
 		char* updated_version = "version";
@@ -700,9 +709,11 @@ void backup_history_bw(char* fname) {
 
 		fprintf(updated_file, curr_version_str);
 		fclose(updated_file);
+		fprintf(log, "push file\n");
 
 		curr_version--;
 	}
+	fprintf(log, "done\n\n");
 }
 
 /*
