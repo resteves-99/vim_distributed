@@ -667,10 +667,12 @@ void backup_history_bw(char* fname) {
 		char curr_number_str[5];
 		snprintf(curr_number_str, 5, "%d", num_files+1);
 		strcat(curr_version, curr_number_str);
-		char* curr_file = str_replace_bw(fname, "version1", curr_version);
-		if (access(fname, F_OK) == 0) {
+		char* curr_file_name = str_replace_bw(fname, "version1", curr_version);
+		FILE* curr_file = fopen(curr_file_name, "r");
+		if (curr_file != NULL) {
 			fprintf(log, "more files\n");
 			free(curr_file);
+			fclose(curr_file);
 			num_files++;
 		}
 		else {
