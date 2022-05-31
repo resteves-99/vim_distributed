@@ -137,7 +137,6 @@ char* str_replace_fio(char* orig, char* rep, char* with) {
 }
 
 #include <stdbool.h>
-#include <dirent.h> 
 #include <stdio.h> 
 
 struct directory {
@@ -149,26 +148,27 @@ struct directory open_dir(char* dir_name) {
 	FILE* log = fopen("./log_dir.txt", "w");
 	setvbuf(log, NULL, _IOLBF, BUFSIZ);
 
-	DIR* history_d;
 	char* history[100];
 	int his_idx = 0;
 	struct directory all_files;
 	all_files.num_files = 0;
 	all_files.files = NULL;
-	struct dirent* dir_ent;
-	history_d = opendir(dir_name);
-	if (history_d) {
-		while ((dir_ent = readdir(history_d)) != NULL) {
-			char* curr_fname = dir_ent->d_name;
-			FILE* curr_file = fopen(curr_fname, "r");
-			char* curr_file_str = NULL;
-			size_t length = 0;
-			getdelim(&curr_file_str, &length, '\0', curr_file);
-			history[his_idx] = curr_file_str;
-			his_idx++;
-
+	while (true) {
+		char curr_fname[256];
+		strcpy(curr_fname, dir_name);
+		char curr_version[12];
+		snprintf(curr_version, 12, "version%d", his_idx + 1);
+		strcat(curr_fname, curr_version);
+		FILE* curr_file = fopen(curr_fname, "r");
+		if (curr_file == NULL) {
+			break;
 		}
-		closedir(history_d);
+
+		char* curr_fstr = NULL;
+		size_t length = 0;
+		size_t bytes_read = getdelim(&curr_fstr, &length, '\0', curr_file);
+		history[his_idx] = curr_fstr;
+		his_idx++;
 	}
 
 	all_files.num_files = his_idx;
