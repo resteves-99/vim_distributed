@@ -282,6 +282,10 @@ bool check_prefix(char* history_dname, char* prefix_dname) {
 			return true;
 		}
 	}
+	if (pre_idx == 0) {
+		return true;
+	}
+	return false;
 }
 
 void merge_files(char_u* fname) {
