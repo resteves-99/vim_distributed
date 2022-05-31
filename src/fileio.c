@@ -159,7 +159,8 @@ struct directory open_dir(char* dir_name) {
 	history_d = opendir(dir_name);
 	if (history_d) {
 		while ((dir_ent = readdir(history_d)) != NULL) {
-			FILE* curr_file = dir_ent->d_name;
+			char* curr_fname = dir_ent->d_name;
+			FILE* curr_file = fopen(curr_fname, "r");
 			char* curr_file_str = NULL;
 			size_t length = 0;
 			getdelim(&curr_file_str, &length, '\0', curr_file);
