@@ -250,12 +250,12 @@ bool check_prefix(char* history_dname, char* prefix_dname) {
 	struct directory history_struct = open_dir(history_dname);
 	int history_len = history_struct.num_files;
 	char** history = history_struct.files;
-	int his_idx = history_len;
+	int his_idx = history_len-1;
 
 	struct directory prefix_struct = open_dir(prefix_dname);
 	int prefix_len = prefix_struct.num_files;
 	char** prefix = prefix_struct.files;
-	int pre_idx = prefix_len;
+	int pre_idx = prefix_len-1;
 
 	// start at back of history and prefix
 	while (his_idx >= 0 || pre_idx >= 0) {
@@ -367,8 +367,8 @@ void merge_files(char_u* fname) {
 
 			char* cp_command = "cp -R ";
 			strcat(cp_command, other_dname); 
-			strcat(cp_command, " "); // "cp -R dir "
-			strcat(cp_command, dname); // cp -R dir lab_dir
+			strcat(cp_command, " "); // "cp -R other_dir "
+			strcat(cp_command, dname); // cp -R other_dir our_dir
 			system(cp_command);
 
 			fprintf(log, "rm call %s \n", rm_command);
