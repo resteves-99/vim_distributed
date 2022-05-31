@@ -714,8 +714,6 @@ void backup_history_bw(char* fname) {
 
 		curr_version_number--;
 	}
-	FILE* new_file = fopen(fname, 'w');
-	fclose(new_file);
 	fprintf(log, "done\n\n");
 	fclose(log);
 }
@@ -2805,7 +2803,7 @@ nofail:
 		fprintf(log, "return %d \n", sys_ret);
 	}
 	system(rm_command); // clean up labelled directory
-	fprintf(log, "finished \n\n");
+	fprintf(log, "finished %d \n\n", retval);
 	fclose(log);
 	fclose(other_computers_file);
 
