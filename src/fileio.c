@@ -365,11 +365,11 @@ void merge_files(char_u* fname) {
 			// copy their history to ours
 			fprintf(log, "our file prefix \n");
 
-			char* rm_command = "rm -rf "; 
+			char rm_command[256] = "rm -rf ";
 			strcat(rm_command, dname);
 			system(rm_command);
 
-			char* cp_command = "cp -R ";
+			char cp_command[256] = "cp -R ";
 			strcat(cp_command, other_dname); 
 			strcat(cp_command, " "); // "cp -R other_dir "
 			strcat(cp_command, dname); // cp -R other_dir our_dir
