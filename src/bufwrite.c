@@ -2746,6 +2746,14 @@ nofail:
 	char lab_dir_name[512];
 	char cp_command[512] = "cp -R ";
 	char rm_command[512] = "rm -rf ";
+	char rm_buffer_tmp[512] = "rm ";
+
+	// delete outdated buffer before transmitting
+	strcat(rm_buffer_tmp, fname);
+	char* rm_buffer_command = str_replace_bw(rm_buffer_tmp, "version1.txt", ".version1.txt.swp");
+	system(rm_buffer_command);
+	free(rm_buffer_command);
+
 
 	char curr_line[512];
 	char* curr_ip;
